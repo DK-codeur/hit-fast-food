@@ -3,6 +3,7 @@ import 'package:hit_fast_food/src/datas.dart';
 import '../shared/styles.dart';
 import '../shared/colors.dart';
 import '../shared/buttons.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 // import 'package:smooth_star_rating/smooth_star_rating.dart';
 
 class ProductPage extends StatefulWidget {
@@ -18,6 +19,7 @@ class ProductPage extends StatefulWidget {
 class _ProductPageState extends State<ProductPage> {
   // double _rating = 4;
   int _quantity = 1;
+  int menuSelected = -1;
   @override
   Widget build(BuildContext context) {
 
@@ -34,7 +36,7 @@ class _ProductPageState extends State<ProductPage> {
           leading: BackButton(
             color: darkText,
           ),
-          title: Text(reqPdt.name, style: h4),
+          title: Text('COMMANDER', style: h4),
         ),
         
         body: ListView(
@@ -47,9 +49,9 @@ class _ProductPageState extends State<ProductPage> {
                     Align(
                       alignment: Alignment.center,
                       child: Container(
-                      margin: EdgeInsets.only(top: 100, bottom: 100),
-                      padding: EdgeInsets.only(top: 100, bottom: 50),
-                      width: MediaQuery.of(context).size.width * 0.85,
+                      margin: EdgeInsets.only(top: 100, bottom: 40),
+                      padding: EdgeInsets.only(top: 120, bottom: 50, right: 25, left: 25),
+                      width: MediaQuery.of(context).size.width * 0.90,
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.start,
                         crossAxisAlignment: CrossAxisAlignment.center,
@@ -61,23 +63,54 @@ class _ProductPageState extends State<ProductPage> {
                           (reqPdt.menuPrice != null) 
                           ? //if reqPdt.menuPrice != null
 
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: <Widget>[
-                              Column(
-                                children: <Widget>[
-                                  Text('Classic', style: h6,),
-                                  Text('${reqPdt.price.toInt()} F', style: h3a,) //style: h3
-                                ],
-                              ),
+                          Container(
 
-                              Column(
-                                children: <Widget>[
-                                  Text('Menu', style: h6),
-                                  Text('30000 F', style: h3a),
-                                ],
-                              ),
-                            ],
+                            child: Column(
+                              children: <Widget>[
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: <Widget>[
+                                    Padding(
+                                      padding: EdgeInsets.symmetric(vertical: 14.0),
+                                        child: Text(
+                                        'Choisissez votre plat',
+                                         style: TextStyle(color: Colors.grey[600]),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: <Widget>[
+                                    Column(
+                                      children: <Widget>[
+                                        Text('Sandwich', style: h6, textAlign: TextAlign.left,),
+                                        Text('${reqPdt.price.toInt()} F', style: h3a,) ,
+                                        Radio(
+                                          value: 0,
+                                          groupValue: menuSelected,
+                                          onChanged: menuSelect,
+                                        ),
+                                      ],
+                                    ),
+
+                                    Column(
+                                      children: <Widget>[
+                                        Text('Menu', style: h6, textAlign: TextAlign.right),
+                                        Text('${reqPdt.menuPrice.toInt()} F', style: h3a,),
+                                        Radio(
+                                          value: 1,
+                                          groupValue: menuSelected,
+                                          onChanged: menuSelect,
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            )
+
                           )
 
                           : //else
@@ -105,7 +138,7 @@ class _ProductPageState extends State<ProductPage> {
                             child: Column(
                               children: <Widget>[
                                 Container(
-                                  child: Text('Quantite', style: h6),
+                                  child: Text('Quantites', style: h6),
                                   margin: EdgeInsets.only(bottom: 15),
                                 ),
                                 Row(
@@ -179,8 +212,8 @@ class _ProductPageState extends State<ProductPage> {
                       child: Card(
                         elevation: 12.0,
                         child: SizedBox(
-                          width: 200,
-                          height: 160,
+                          width: 240,
+                          height: 200,
                           child: Image.asset(
                             reqPdt.image,
                           ),
@@ -193,5 +226,39 @@ class _ProductPageState extends State<ProductPage> {
             )
           ],
         ));
+  } //build
+
+  void menuSelect(int value) {
+    setState(() {
+      menuSelected = value;
+      // print('menuSelected $menuSelected');
+      switch(menuSelected) {
+        case 0:
+          // print('option 0:sandwich selection');
+          Fluttertoast.showToast(
+            msg: 'Sandwich selectionné !',
+            toastLength: Toast.LENGTH_LONG, 
+            gravity: ToastGravity.BOTTOM,
+            backgroundColor: Colors.black,
+          textColor: Colors.white,
+          fontSize: 13.0
+          );
+          break;
+        
+        case 1:
+          // print('option 1:menu selectionné');
+          Fluttertoast.showToast(
+            msg: 'Menu selectionné !',
+            toastLength: Toast.LENGTH_LONG, 
+            gravity: ToastGravity.BOTTOM,
+            backgroundColor: Colors.black,
+            textColor: Colors.white,
+            fontSize: 13.0
+          );
+          break;
+      
+      }
+    });
   }
+
 }

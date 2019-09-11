@@ -12,9 +12,10 @@ const logoStyle = TextStyle(
     letterSpacing: 2);
 
 const logoWhiteStyle = TextStyle(
-    fontFamily: 'Pacifico',
-    fontSize: 21,
-    letterSpacing: 2,
+    fontFamily: 'CenturyGothic',
+    fontSize: 24,
+    // letterSpacing: 2,
+    fontWeight: FontWeight.bold,
     color: Colors.white);
 const whiteText = TextStyle(color: Colors.white, fontFamily: 'Poppins');
 const disabledText = TextStyle(color: Colors.grey, fontFamily: 'Poppins');
@@ -31,7 +32,7 @@ const h3 = TextStyle(
 const h3a = TextStyle(
     color: primaryColor,
     fontSize: 24,
-    fontWeight: FontWeight.w800,
+    fontWeight: FontWeight.w600,
     fontFamily: 'Poppins');
 
 const h4 = TextStyle(

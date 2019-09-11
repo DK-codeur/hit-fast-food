@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:hit_fast_food/src/screens/store.dart';
+import 'package:hit_fast_food/src/shared/my_flutter_app_icons.dart';
 import '../shared/main_drawer.dart';
 import '../shared/styles.dart';
 import '../shared/colors.dart';
 import '../shared/fryo_icons.dart';
 
 class Dashboard extends StatefulWidget {
+  static const routeName = '/dashboard';
+
   final String pageTitle;
 
   Dashboard({Key key, this.pageTitle}) : super(key: key);
@@ -18,13 +21,13 @@ class _DashboardState extends State<Dashboard> {
 
   final GlobalKey<ScaffoldState> _keyScaffold = GlobalKey<ScaffoldState>();
 
-  int _selectedIndex = 0;
+  int _selectedIndex = 1;
 
   @override
   Widget build(BuildContext context) {
     final _tabs = [
+      Text('panier'),
       Store(),
-      Text('Tab2'),
       Text('Tab3'),
     ];
 
@@ -42,13 +45,13 @@ class _DashboardState extends State<Dashboard> {
             icon: Icon(Icons.apps),
           ),
           backgroundColor: primaryColor,
-          title: Text('Hit Fast Food', style: logoWhiteStyle, textAlign: TextAlign.center),
+          title: Text('Hit FastFood', style: logoWhiteStyle, textAlign: TextAlign.center),
           actions: <Widget>[
             IconButton(
               padding: EdgeInsets.all(0),
               onPressed: () {},
               iconSize: 27,
-              icon: Icon(Icons.shop),
+              icon: Icon(MyFlutterApp.shopping_bag),
             )
           ],
         ),
@@ -69,19 +72,21 @@ class _DashboardState extends State<Dashboard> {
           items: <BottomNavigationBarItem>[
             BottomNavigationBarItem(
                 
+                icon: Icon(MyFlutterApp.shopping_bag),
+                title: Text(
+                  'Panier',
+                  style: tabLinkStyle,
+                )),
+
+             BottomNavigationBarItem(
+                
                 icon: Icon(Fryo.shop),
                 title: Text(
                   'Store',
                   style: tabLinkStyle,
                 )
             ),
-            BottomNavigationBarItem(
-                
-                icon: Icon(Fryo.cart),
-                title: Text(
-                  'Panier',
-                  style: tabLinkStyle,
-                )),
+
             BottomNavigationBarItem(
                 
                 icon: Icon(Fryo.heart_1),
@@ -100,6 +105,18 @@ class _DashboardState extends State<Dashboard> {
     setState(() {
       _selectedIndex = index;
     });
+  }
+
+void menuInfo() {
+    SnackBar mysnack = new SnackBar(
+      content: new Text(
+        'Mon premier snackbar'
+      ),
+      backgroundColor: Colors.red,
+      duration: new Duration(seconds: 2),
+    );
+
+    Scaffold.of(context).showSnackBar(mysnack);
   }
 }
 

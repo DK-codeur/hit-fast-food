@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import './src/screens/SignInPage.dart';
-import './src/screens/SignUpPage.dart';
+import 'src/screens/login.dart';
+import 'src/screens/signup.dart';
+
 import './src/screens/HomePage.dart';
 import './src/screens/Dashboard.dart';
 import './src/screens/ProductPage.dart';
@@ -14,16 +15,16 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Hit Fast Food',
+      title: 'Hit FastFood',
       theme: ThemeData(
         primarySwatch: Colors.red,
       ),
       home: HomePage(pageTitle: 'Welcome'),
       routes: <String, WidgetBuilder> {
-        '/signup': (BuildContext context) =>  SignUpPage(),
-        '/signin': (BuildContext context) =>  SignInPage(),
-        '/dashboard': (BuildContext context) => Dashboard(),
-        '/productPage': (BuildContext context) => ProductPage(),
+        SignUp.routeName: (BuildContext context) =>  SignUp(),
+        Login.routeName: (BuildContext context) =>  Login(),
+        Dashboard.routeName: (BuildContext context) => Dashboard(),
+        ProductPage.routeName: (BuildContext context) => ProductPage(),
       },
     );
   }

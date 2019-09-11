@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:hit_fast_food/src/datas.dart';
+import '../datas.dart';
 import '../widgets/fooditem.dart';
 import '../shared/styles.dart';
 // import '../models/product.dart';
@@ -61,7 +61,10 @@ class _DealsState extends State<Deals> {
                 //     )
                 //   ],
           ),
-        )
+        ),
+
+        Container(margin: EdgeInsets.only(bottom: 20),)
+
       ],
     ),
   );

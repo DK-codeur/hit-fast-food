@@ -11,7 +11,9 @@ class Store extends StatelessWidget {
         children: <Widget>[
           HeaderCategoriesTop(),
 
-          Deals('Burgers', () {}, 1),
+          Deals('Burgers', () {}, 2),
+          Deals('Chicken', () {}, 1),
+          Deals('Tacos (Poulet ou Viande)', () {}, 3),
 
         ],
       ),

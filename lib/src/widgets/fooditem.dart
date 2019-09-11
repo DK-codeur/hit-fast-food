@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:hit_fast_food/src/widgets/snac.dart';
 import '../screens/productPage.dart';
-// import '../models/Product.dart';
 import '../shared/colors.dart';
 import '../shared/styles.dart';
+
 
 class FoodItem extends StatelessWidget {
   final int idItem;
@@ -65,15 +66,9 @@ class FoodItem extends StatelessWidget {
           ),
 
           Positioned(
-            bottom: 75,
-            right: 17,
-            child: Text(
-              (isMenu != null) ? isMenu : '',
-              style: TextStyle(
-                  color: Colors.orange,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 15.0),
-            ),
+            bottom: 64,
+            right: 8,
+            child: (isMenu != null) ? Snac(name) : SizedBox(width: 0,)
             // child: FlatButton(
             //   padding: EdgeInsets.all(20),
             //   shape: CircleBorder(),
@@ -118,6 +113,7 @@ class FoodItem extends StatelessWidget {
     );
   } //build
 
+
   void selectFood(BuildContext context) {
     Navigator.of(context).pushNamed(
       ProductPage.routeName,
@@ -131,5 +127,7 @@ class FoodItem extends StatelessWidget {
       }
     );
   }
+  
 
 }
+

@@ -24,9 +24,9 @@ class HeaderCategoriesTop extends StatelessWidget {
               backgroundColor: white,
               child: Image.asset(
                 'images/$image',
-                fit: BoxFit.contain,
-                width: 50.0,
-                height: 50.0,
+                fit: BoxFit.fill,
+                width: 70.0,
+                height: 70.0,
               ),
             )),
         Text(name + ' ›', style: categoryText)
@@ -44,18 +44,23 @@ class HeaderCategoriesTop extends StatelessWidget {
     crossAxisAlignment: CrossAxisAlignment.center,
     children: <Widget>[
       Padding(
-        padding: EdgeInsets.symmetric(vertical: 14.0),
-        child: Text(
-        'Toutes les Categories',
-        textAlign: TextAlign.left,
-        style: TextStyle(
-          color: Colors.grey[600],
-          fontSize: 18,
-          fontWeight: FontWeight.w700,
-          fontFamily: 'Poppins'
+        padding: EdgeInsets.only(bottom: 14.0),
+        child: Container(
+          padding: EdgeInsets.only(top: 14.0, bottom: 14.0),
+          color: Colors.white,
+          width: double.infinity,
+          child: Text(
+            'Nos specialites',
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              color: Colors.grey[600],
+              fontSize: 20,
+              fontWeight: FontWeight.w700,
+              fontFamily: 'CenturyGothic'
+            ),
+          ),
         ),
       ),
-    ),
     
       SizedBox(
         height: 130,
