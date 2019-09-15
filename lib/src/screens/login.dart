@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:hit_fast_food/src/shared/colors.dart';
-import 'package:hit_fast_food/src/shared/fryo_icons.dart';
 import './signup.dart';
 
 class Login extends StatefulWidget {

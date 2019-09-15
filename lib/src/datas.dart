@@ -230,6 +230,42 @@ List<Product> foods = [
       cat: 3,
       // userLiked: true,
       // discount: 3 
+  ),
+
+  Product(
+      idPdt: 20,
+      name: "Steak",
+      image: "images/STEAK FRITES.jpg",
+      price: 5500,
+      menuPrice: null,
+      isMenu: null,
+      cat: 4,
+      // userLiked: true,
+      // discount: 3 
+  ),
+
+  Product(
+      idPdt: 21,
+      name: "Brochettes",
+      image: "images/BROCHETTES.jpg",
+      price: 5500,
+      menuPrice: null,
+      isMenu: null,
+      cat: 4,
+      // userLiked: true,
+      // discount: 3 
+  ),
+
+  Product(
+      idPdt: 22,
+      name: "Mix grilled",
+      image: "images/MIX GRILLED.jpg",
+      price: 10000,
+      menuPrice: null,
+      isMenu: null,
+      cat: 4,
+      // userLiked: true,
+      // discount: 3 
   )
 
 ];

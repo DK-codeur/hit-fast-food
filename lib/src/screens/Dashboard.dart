@@ -89,9 +89,9 @@ class _DashboardState extends State<Dashboard> {
 
             BottomNavigationBarItem(
                 
-                icon: Icon(Fryo.heart_1),
+                icon: Icon(Icons.account_circle),
                 title: Text(
-                  'Envies',
+                  'Compte',
                   style: tabLinkStyle,
                 )
             ),

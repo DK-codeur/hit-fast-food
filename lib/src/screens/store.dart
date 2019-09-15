@@ -14,6 +14,7 @@ class Store extends StatelessWidget {
           Deals('Burgers', () {}, 2),
           Deals('Chicken', () {}, 1),
           Deals('Tacos (Poulet ou Viande)', () {}, 3),
+          Deals('Grillades & Platter', () {}, 4),
 
         ],
       ),
