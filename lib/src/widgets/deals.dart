@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import '../datas.dart';
+import 'package:hit_fast_food/src/providers/datas_provider.dart';
+import 'package:provider/provider.dart';
 import '../widgets/fooditem.dart';
 import '../shared/styles.dart';
 // import '../models/product.dart';
@@ -24,10 +25,13 @@ class _DealsState extends State<Deals> {
   @override
   Widget build(BuildContext context) {
 
-    var reqProd = foods.where( (prd) => prd.cat == widget.idCat).toList();
+    // var reqProd = foods.where( (prd) => prd.cat == widget.idCat).toList();
+
+    final productData = Provider.of<ProductsProvider>(context);
+    final dealFood = productData.foodsByCat(widget.idCat);
 
     return Container(
-    margin: EdgeInsets.only(top: 5),
+    margin: EdgeInsets.only(top: 0),
     child: Column(
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,
@@ -36,20 +40,14 @@ class _DealsState extends State<Deals> {
         SizedBox(
           height: 250,
           child: ListView.builder(
-            itemCount: reqProd.length,
+            itemCount: dealFood.length,
             scrollDirection: Axis.horizontal,
-            itemBuilder: (ctx, index) {
-              return FoodItem(
-                idItem: reqProd[index].idPdt,
-                name: reqProd[index].name,
-                isMenu: reqProd[index].isMenu,
-                price: reqProd[index].price,
-                image: reqProd[index].image,
-                discount: reqProd[index].discount,
-                menuPrice: reqProd[index].menuPrice,
-
-              );
-            },
+            itemBuilder: (ctx, index) => ChangeNotifierProvider.value (
+              value: dealFood[index],
+              child: FoodItem(
+                //...id, title 
+              )
+            ),
             // children: (widget.items != null)
                 // <Widget>[
                 //     Container(
@@ -76,8 +74,8 @@ class _DealsState extends State<Deals> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
         Container(
-          margin: EdgeInsets.all(15),
-          child: Text(headerTitle, style: h4),
+          margin: EdgeInsets.only(left: 30,),
+          child: Text(headerTitle, style: h4a),
         ),
         // Container(
         //   margin: EdgeInsets.only(left: 15, top: 2),

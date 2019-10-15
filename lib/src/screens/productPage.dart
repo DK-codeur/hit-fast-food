@@ -1,10 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:hit_fast_food/src/datas.dart';
+import 'package:hit_fast_food/src/providers/datas_provider.dart';
+import 'package:provider/provider.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:transparent_image/transparent_image.dart';
+
+import '../providers/cart_provider.dart';
+import '../widgets/badge.dart';
+import '../shared/my_flutter_app_icons.dart';
 import '../shared/styles.dart';
 import '../shared/colors.dart';
 import '../shared/buttons.dart';
-import 'package:fluttertoast/fluttertoast.dart';
-// import 'package:smooth_star_rating/smooth_star_rating.dart';
+
+import 'cart_screen.dart';
 
 class ProductPage extends StatefulWidget {
   static const routeName = '/productPage';
@@ -23,9 +30,12 @@ class _ProductPageState extends State<ProductPage> {
   @override
   Widget build(BuildContext context) {
 
-    final routeArg = ModalRoute.of(context).settings.arguments as Map<String, int>;
-    final foodId = routeArg['idItem'];
-    final reqPdt = foods.firstWhere( (food) => food.idPdt == foodId);
+    final cart = Provider.of<Cart>(context, listen: false);
+    final foodId = ModalRoute.of(context).settings.arguments as String;
+    // final foodId = routeArg['idItem'];
+    //foods.firstWhere( (food) => food.idPdt == foodId);
+
+    final reqPdt = Provider.of<ProductsProvider>(context).findById(foodId);  
 
     return Scaffold(
         backgroundColor: bgColor,
@@ -37,6 +47,23 @@ class _ProductPageState extends State<ProductPage> {
             color: darkText,
           ),
           title: Text('COMMANDER', style: h4),
+
+          actions: <Widget>[
+            Consumer<Cart>(
+              builder: (_, cart, ch) => Badge(
+                value: cart.itemCount.toString(),
+                child: ch,
+              ),
+
+              child: IconButton(
+                icon: Icon(MyFlutterApp.shopping_bag, color: primaryColor,),
+                iconSize: 27,
+                onPressed: () {
+                  Navigator.of(context).pushNamed(CartScreen.routeName);
+                },
+              ),
+            )
+          ],
         ),
         
         body: ListView(
@@ -56,7 +83,7 @@ class _ProductPageState extends State<ProductPage> {
                         mainAxisAlignment: MainAxisAlignment.start,
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: <Widget>[
-                          Text(reqPdt.name, style: h5),
+                          Text(reqPdt.title, style: h5),
                           
                           SizedBox(height: 20,),
 
@@ -119,42 +146,32 @@ class _ProductPageState extends State<ProductPage> {
                           Container(child: Divider(),),
                           Container(
                             margin: EdgeInsets.only(top: 5, bottom: 20),
-                            // child: SmoothStarRating(
-                            //   allowHalfRating: false,
-                            //   onRatingChanged: (v) {
-                            //     setState(() {
-                            //       _rating = v;
-                            //     });
-                            //   },
-                            //   starCount: 5,
-                            //   rating: _rating,
-                            //   size: 27.0,
-                            //   color: Colors.orange,
-                            //   borderColor: Colors.orange,
-                            // ),
+                            
                           ),
                           Container(
                             margin: EdgeInsets.only(top: 10, bottom: 25),
                             child: Column(
                               children: <Widget>[
                                 Container(
-                                  child: Text('Quantites', style: h6),
+                                  child: Text('Quantité', style: h6),
                                   margin: EdgeInsets.only(bottom: 15),
                                 ),
                                 Row(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   crossAxisAlignment: CrossAxisAlignment.center,
                                   children: <Widget>[
+                                    
                                     Container(
                                       width: 55,
                                       height: 55,
                                       child: OutlineButton(
                                         onPressed: () {
                                           setState(() {
-                                            _quantity += 1;
+                                           if(_quantity == 1) return; //no decre if qte ==1
+                                             _quantity -= 1; 
                                           });
                                         },
-                                        child: Icon(Icons.add),
+                                        child: Icon(Icons.remove),
                                       ),
                                     ),
 
@@ -169,13 +186,14 @@ class _ProductPageState extends State<ProductPage> {
                                       child: OutlineButton(
                                         onPressed: () {
                                           setState(() {
-                                           if(_quantity == 1) return; //no decre if qte ==1
-                                             _quantity -= 1; 
+                                            _quantity += 1;
                                           });
                                         },
-                                        child: Icon(Icons.remove),
+                                        child: Icon(Icons.add),
                                       ),
-                                    )
+                                    ),
+
+                                    
                                   ],
                                 )
                               ],
@@ -184,13 +202,81 @@ class _ProductPageState extends State<ProductPage> {
 
                           Container(
                             width: 180,
-                            child: froyoOutlineBtn('Acheter', () {}),
+                            child: froyoOutlineBtn(
+                              'Acheter', 
+                              (reqPdt.menuPrice != 0 && menuSelected < 0) 
+                              ? () => Fluttertoast.showToast(
+                                  msg: 'Veuillez choisir un plat !',
+                                  toastLength: Toast.LENGTH_LONG, 
+                                  gravity: ToastGravity.CENTER,
+                                  backgroundColor: Colors.red,
+                                  textColor: Colors.white,
+                                  fontSize: 13.0
+                              )
+                              
+                            : () {
+                              cart.addItem(
+                                reqPdt.idPdt, 
+                               (reqPdt.menuPrice != 0 && (menuSelected == 1)) ? reqPdt.menuPrice  : reqPdt.price,
+                                reqPdt.title, 
+                                reqPdt.image, 
+                                _quantity,
+                                (reqPdt.isMenu != '') ? reqPdt.isMenu: '',
+                              );
+
+                              Navigator.of(context).pushNamed(
+                                CartScreen.routeName
+                              );
+
+                               Fluttertoast.showToast(
+                                msg: 'Veuillez valider votre panier',
+                                toastLength: Toast.LENGTH_LONG, 
+                                gravity: ToastGravity.BOTTOM,
+                                backgroundColor: primaryColor,
+                                textColor: Colors.white,
+                                fontSize: 14.0
+                              );
+                            }),
                           ),
 
                           Container(
                             width: 180,
-                            child: froyoFlatBtn('Ajouter au panier', () {}),
+                            child: froyoFlatBtn(
+                              'Ajouter au panier', 
+                              ( reqPdt.menuPrice != null && menuSelected < 0) 
+                              ?  () => Fluttertoast.showToast(
+                                  msg: 'Veuillez choisir un plat !',
+                                  toastLength: Toast.LENGTH_LONG, 
+                                  gravity: ToastGravity.CENTER,
+                                  backgroundColor: Colors.red,
+                                  textColor: Colors.white,
+                                  fontSize: 13.0
+                              )
+
+                              : () {
+                              cart.addItem(
+                                reqPdt.idPdt, 
+                                (reqPdt.menuPrice != 0 && (menuSelected == 1)) ? reqPdt.menuPrice  : reqPdt.price, 
+                                reqPdt.title, 
+                                reqPdt.image, 
+                                _quantity,
+                                (reqPdt.isMenu != '') ? reqPdt.isMenu: '',
+                              );
+
+                              Navigator.pop(context);
+
+                              Fluttertoast.showToast(
+                                msg: 'Ajouter avec succès au panier',
+                                toastLength: Toast.LENGTH_LONG, 
+                                gravity: ToastGravity.BOTTOM,
+                                backgroundColor: primaryColor,
+                                textColor: Colors.white,
+                                fontSize: 14.0
+                              );
+                              
+                            }),
                           )
+
                         ],
                       ),
 
@@ -214,8 +300,10 @@ class _ProductPageState extends State<ProductPage> {
                         child: SizedBox(
                           width: 240,
                           height: 200,
-                          child: Image.asset(
-                            reqPdt.image,
+                          child: FadeInImage.memoryNetwork(
+                            placeholder: kTransparentImage,
+                            image: reqPdt.image,
+                            
                           ),
                         ),
                       ),
@@ -231,10 +319,8 @@ class _ProductPageState extends State<ProductPage> {
   void menuSelect(int value) {
     setState(() {
       menuSelected = value;
-      // print('menuSelected $menuSelected');
       switch(menuSelected) {
         case 0:
-          // print('option 0:sandwich selection');
           Fluttertoast.showToast(
             msg: 'Sandwich selectionné !',
             toastLength: Toast.LENGTH_LONG, 
@@ -246,7 +332,6 @@ class _ProductPageState extends State<ProductPage> {
           break;
         
         case 1:
-          // print('option 1:menu selectionné');
           Fluttertoast.showToast(
             msg: 'Menu selectionné !',
             toastLength: Toast.LENGTH_LONG, 

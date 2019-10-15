@@ -14,6 +14,14 @@ class _SignUpState extends State<SignUp> {
   bool _toggleVisibility = true;
   bool _toggleConfirmVisibility = true;
 
+  //request focus
+  final _prenomsFocus = FocusNode();
+  final _telephoneFocus = FocusNode();
+  final _passwordFocus = FocusNode();
+  final _confirmpasswordFocus = FocusNode();
+
+  final _form = GlobalKey<FormState>();
+
   Widget _buildNameTextField() {
     return TextFormField(
       decoration: InputDecoration(
@@ -24,6 +32,26 @@ class _SignUpState extends State<SignUp> {
           fontSize: 18.0,
         ),
       ),
+
+      textInputAction: TextInputAction.next,
+      onFieldSubmitted: (_) {
+        FocusScope.of(context).requestFocus(_prenomsFocus);
+      },
+
+      //onSave if method here
+
+      validator: (value) {
+        if (value.isEmpty) {
+          return 'Entrez votre nom';
+        }
+
+        if (value.length == 1) {
+          return 'Nom trop court';
+        }
+
+        return null;
+      },
+
     );
   }
 
@@ -37,12 +65,33 @@ class _SignUpState extends State<SignUp> {
           fontSize: 18.0,
         ),
       ),
+
+      textInputAction: TextInputAction.next,
+      focusNode: _prenomsFocus,
+      onFieldSubmitted: (_) {
+        FocusScope.of(context).requestFocus(_telephoneFocus);
+      },
+
+
+      validator: (value) {
+        if (value.isEmpty) {
+          return 'Entrez votre prenoms';
+        }
+
+        if (value.length == 1) {
+          return 'prenoms trop court';
+        }
+
+        return null;
+      },
+
     );
   }
 
   Widget _buildPhoneTextField() {
     return TextFormField(
       keyboardType: TextInputType.number,
+      maxLength: 8,
       decoration: InputDecoration(
         hintText: "Telephone",
         icon: Icon(Icons.phone_iphone),
@@ -51,6 +100,25 @@ class _SignUpState extends State<SignUp> {
           fontSize: 18.0,
         ),
       ),
+
+      textInputAction: TextInputAction.next,
+      focusNode: _telephoneFocus,
+      onFieldSubmitted: (_) {
+        FocusScope.of(context).requestFocus(_passwordFocus);
+      },
+
+      validator: (value) {
+        if (value.isEmpty) {
+          return 'Entrez un numero de telephone';
+        }
+
+        if (value.length < 8 ) {
+          return 'Numero trop court';
+        }
+
+        return null;
+      },
+
     );
   }
 
@@ -69,12 +137,29 @@ class _SignUpState extends State<SignUp> {
               _toggleVisibility = !_toggleVisibility;
             });
           },
-          icon: _toggleVisibility
-              ? Icon(Icons.visibility_off)
-              : Icon(Icons.visibility),
+          icon: _toggleVisibility ? Icon(Icons.visibility_off) : Icon(Icons.visibility),
         ),
       ),
+
       obscureText: _toggleVisibility,
+      textInputAction: TextInputAction.next,
+      focusNode: _passwordFocus,
+      onFieldSubmitted: (_) {
+        FocusScope.of(context).requestFocus(_confirmpasswordFocus);
+      },
+
+       validator: (value) {
+        if (value.isEmpty) {
+          return 'Entrez un mot de passe';
+        }
+
+        if (value.length < 6 ) {
+          return '6 caractère minimum';
+        }
+
+        return null;
+      },
+
     );
   }
 
@@ -98,9 +183,42 @@ class _SignUpState extends State<SignUp> {
               : Icon(Icons.visibility),
         ),
       ),
+      textInputAction: TextInputAction.done,
+      focusNode: _confirmpasswordFocus,
       obscureText: _toggleConfirmVisibility,
+
+      validator: (value) {
+        if (value.isEmpty) {
+          return 'confirmez votre mot de passe';
+        }
+
+        if (value.length < 6 ) {
+          return '6 caractère minimum';
+        }
+
+        return null;
+      },
+
     );
   }
+
+  @override
+  void dispose() {
+    _prenomsFocus.dispose();
+    _telephoneFocus.dispose();
+    _passwordFocus.dispose();
+    _confirmpasswordFocus.dispose();
+    super.dispose();
+  }
+
+  // Future<void> _saveForm() async {
+  //   final _isValid = _form.currentState.validate();
+
+  //   if (!_isValid) {
+  //     return ;
+  //   }
+  // }
+
 
   @override
   Widget build(BuildContext context) {
@@ -139,7 +257,7 @@ class _SignUpState extends State<SignUp> {
 
 
             Padding(
-            padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 15),
+            padding: EdgeInsets.symmetric(horizontal: 12.0, vertical: 15),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
@@ -147,30 +265,35 @@ class _SignUpState extends State<SignUp> {
                 SizedBox(
                   height: 30.0,
                 ),
-                Card(
-                  elevation: 12.0,
-                  child: Padding(
-                    padding: EdgeInsets.all(20.0),
-                    child: Column(
-                      children: <Widget>[
-                        _buildNameTextField(),
-                        SizedBox(
-                          height: 20.0,
-                        ),
-                        _buildLastNameTextField(),
-                        SizedBox(
-                          height: 20.0,
-                        ),
-                        _buildPhoneTextField(),
-                        SizedBox(
-                          height: 20.0,
-                        ),
-                        _buildPasswordTextField(),
-                        SizedBox(
-                          height: 20.0,
-                        ),
-                        _buildConfirmPasswordTextField(),
-                      ],
+
+                Form(
+                  key: _form,
+
+                  child: Card(
+                    elevation: 12.0,
+                    child: Padding(
+                      padding: EdgeInsets.all(20.0),
+                      child: Column(
+                        children: <Widget>[
+                          _buildNameTextField(),
+                          SizedBox(
+                            height: 20.0,
+                          ),
+                          _buildLastNameTextField(),
+                          SizedBox(
+                            height: 20.0,
+                          ),
+                          _buildPhoneTextField(),
+                          SizedBox(
+                            height: 20.0,
+                          ),
+                          _buildPasswordTextField(),
+                          SizedBox(
+                            height: 20.0,
+                          ),
+                          _buildConfirmPasswordTextField(),
+                        ],
+                      ),
                     ),
                   ),
                 ),

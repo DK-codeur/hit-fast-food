@@ -53,9 +53,11 @@ class _LoginState extends State<Login> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      
       appBar: AppBar(
         backgroundColor: primaryColor,
         centerTitle: true,
+        
         title: Text(
           "Connexion",
           style: TextStyle(
@@ -163,7 +165,7 @@ class _LoginState extends State<Login> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
                     Text(
-                      "Pas encore inscrire",
+                      "Pas encore inscrit ?",
                       style: TextStyle(
                           color: Color(0xFFBDC2CB),
                           fontWeight: FontWeight.bold,

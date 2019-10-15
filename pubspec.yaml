@@ -14,7 +14,7 @@ description: A new Flutter project.
 version: 1.0.0+1
 
 environment:
-  sdk: ">=2.1.0 <3.0.0"
+  sdk: ">=2.2.2 <3.0.0"
 
 dependencies:
   flutter:
@@ -22,6 +22,10 @@ dependencies:
   page_transition: '^1.0.9'
   smooth_star_rating: '1.0.2'
   fluttertoast: ^3.1.3
+  provider: ^3.1.0
+  intl: ^0.16.0  
+  http: ^0.12.0+2
+  transparent_image: ^1.0.0
 
 
   # The following adds the Cupertino Icons font to your application.
@@ -46,58 +50,18 @@ flutter:
 
   # To add assets to your application, add an assets section, like this:
   assets:
-  # burger
-   - images/CHEESE BURGER1500.jpg
-   - images/HAMBURGER 1000.jpg
-   - images/CHICKEN BURGER.jpg
-   - images/COUNTRY BURGER.jpg
-   - images/double CHEESE BURGER.jpg
-   - images/HIT BURGER.jpg
-   - images/SMOKED CHICKEN Burger.jpg
-   - images/VEGGIE BURGER.jpg
-  #  chicken
-   - images/CRUSTY CHICKEN X4.jpg
-   - images/CRUSTY CHICKEN X10.jpg 
-   - images/CRUSTY WINGS X6.jpg 
-   - images/CRUSTY WINGS X10.jpg 
-   - images/PERI-PERI CHICKEN X4.jpg
-   - images/PERI-PERI CHICKEN X10.jpg
-   - images/PERI-PERI WINGS X6.jpg
-   - images/PERI-PERI WINGS X10.jpg
-  #  tacos
-   - images/tacos taille S.jpg
-   - images/tacos taille M.jpg
-   - images/tacos taille L.jpg
-  # hot dog et sandwich
-   - images/HOT DOG POULET.jpg
-   - images/HOT DOG Boeuf.jpg
-   - images/Sandwichs KOFTA.jpg
-  # Grillade et platter 
-   - images/STEAK FRITES.jpg
-   - images/BROCHETTES.jpg
-   - images/MIX GRILLED.jpg
-  # Salades 
-   - images/salades de CREVETTES.jpg
-   - images/salade de poulet.jpg
-  # Boisson 
-   - images/smoothie.jpg
-   - images/smoothie detox.jpg
-   - images/soda ice cream.jpg
-   - images/milkshake.jpg
-   
   # cat
-   - images/boissonCat.jpg
-   - images/burgerCat.jpg
-   - images/chickenCat.jpg
-   - images/extraCat.jpg
-   - images/grillCat.jpg
-   - images/hotdogCat.jpg
-   - images/saladCat.jpg
-   - images/sandwichCat.jpg
-   - images/tacosCat.jpg
-   - images/gourmanCat.jpg
+   - images/burgerCat.png
+   - images/chickenCat.png
+   - images/grillCat.png
+   - images/hotdogCat.png
+   - images/saladCat.png
+   - images/tacosCat.png
+
+  # image 
    - images/drawerimag.jpg
-   - images/logoSpl.png
+   - images/hitFastfood.gif
+   - images/car.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.

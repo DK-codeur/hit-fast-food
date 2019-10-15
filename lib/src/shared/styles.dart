@@ -40,6 +40,12 @@ const h4 = TextStyle(
     fontSize: 18,
     fontWeight: FontWeight.w700,
     fontFamily: 'Poppins');
+
+const h4a = TextStyle(
+  color: primaryColor,
+  fontSize: 22,
+  fontWeight: FontWeight.w700,
+  fontFamily: 'Poppins');
     
 const h5 = TextStyle(
     color: Colors.black,
@@ -53,16 +59,22 @@ const h5 = TextStyle(
     fontWeight: FontWeight.w500,
     fontFamily: 'Poppins');
 
+    const ha6 = TextStyle(
+    color: Colors.grey,
+    fontSize: 16,
+    fontWeight: FontWeight.w500,
+    fontFamily: 'Poppins');
+
 
 const priceText = TextStyle(
     color: Colors.black,
     fontSize: 19,
-    fontWeight: FontWeight.w800,
+    fontWeight: FontWeight.w700,
     fontFamily: 'Poppins');
 
 const foodNameText = TextStyle(
     color: Colors.black,
-    fontSize: 17,
+    fontSize: 15,
     fontWeight: FontWeight.w600,
     fontFamily: 'Poppins');
 

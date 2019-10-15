@@ -1,8 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import '../shared/colors.dart';
-import 'Dashboard.dart';
+import './Dashboard.dart';
 // import './SignUpPage.dart';
 // import './SignInPage.dart';
 // import '../shared/buttons.dart';
@@ -23,7 +22,7 @@ class _HomePageState extends State<HomePage> {
 
   @override
   void initState() {
-    Timer(Duration(seconds: 10), () {
+    Timer(Duration(seconds: 7), () {
       Navigator.of(context).pushReplacement(MaterialPageRoute(
         builder: (context) => Dashboard()
       ));
@@ -35,61 +34,69 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
-        child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
+      body: Stack(
         children: <Widget>[
           Container(
-            height: 200,
-            width: 200,
-            child: Image.asset(
-              'images/logoSpl.png',
-              
-            ),
+            height: 25,
+            color: Colors.red,
           ),
-          SizedBox(height: 30.0,),
-          Text('Chargement...', style: TextStyle(color: Colors.white)),
 
-        //   Image.asset('images/welcome.png', width: 190, height: 190),
-        //   Container(
-        //     margin: EdgeInsets.only(bottom: 10, top: 0),
-        //     child: Text('Hit Fast Food', style: logoStyle),
-        //   ),
-        //   Container(
-        //     width: 200,
-        //     margin: EdgeInsets.only(bottom: 0),
-        //     child: froyoFlatBtn('Sign In', (){ 
+          Center(
+            child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: <Widget>[
+              Container(
+                height: 200,
+                width: 200,
+                child: Image.asset(
+                  'images/hitFastfood.gif',
+                ),
+              ),
+              SizedBox(height: 30.0,),
+              Text('Chargement...', style: TextStyle(color: Colors.black)),
 
-        //       Navigator.pushReplacement(context, PageTransition(type: PageTransitionType.rotate, duration: Duration(seconds: 1),  child: SignInPage()));
-        //     }),
-        //   ),
-        //   Container(
-        //     width: 200,
-        //     padding: EdgeInsets.all(0),
-            // child: froyoOutlineBtn('Sign Up', (){
-        //       Navigator.pushReplacement(context, PageTransition(type: PageTransitionType.rotate, duration: Duration(seconds: 1),  child: SignUpPage()));
-        //       // Navigator.of(context).pushReplacementNamed('/signup');
-        //      }),
-        //   ),
-        //   Container(
-        //     margin: EdgeInsets.only(top: 25),
-        //     child: Row(
-        //       mainAxisAlignment: MainAxisAlignment.center,
-        //       crossAxisAlignment: CrossAxisAlignment.center,
+            //   Image.asset('images/welcome.png', width: 190, height: 190),
+            //   Container(
+            //     margin: EdgeInsets.only(bottom: 10, top: 0),
+            //     child: Text('Hit Fast Food', style: logoStyle),
+            //   ),
+            //   Container(
+            //     width: 200,
+            //     margin: EdgeInsets.only(bottom: 0),
+            //     child: froyoFlatBtn('Sign In', (){ 
 
-        //       children: <Widget>[
-        //         Text('Langauage:', style: TextStyle(color: darkText)),
-        //         Container(
-        //           margin: EdgeInsets.only(left: 6),
-        //           child: Text('English ›', style: TextStyle(color: Colors.black, fontWeight: FontWeight.w500)),
-        //         )
-        //       ],
-        //     ),
-        //   )
+            //       Navigator.pushReplacement(context, PageTransition(type: PageTransitionType.rotate, duration: Duration(seconds: 1),  child: SignInPage()));
+            //     }),
+            //   ),
+            //   Container(
+            //     width: 200,
+            //     padding: EdgeInsets.all(0),
+                // child: froyoOutlineBtn('Sign Up', (){
+            //       Navigator.pushReplacement(context, PageTransition(type: PageTransitionType.rotate, duration: Duration(seconds: 1),  child: SignUpPage()));
+            //       // Navigator.of(context).pushReplacementNamed('/signup');
+            //      }),
+            //   ),
+            //   Container(
+            //     margin: EdgeInsets.only(top: 25),
+            //     child: Row(
+            //       mainAxisAlignment: MainAxisAlignment.center,
+            //       crossAxisAlignment: CrossAxisAlignment.center,
+
+            //       children: <Widget>[
+            //         Text('Langauage:', style: TextStyle(color: darkText)),
+            //         Container(
+            //           margin: EdgeInsets.only(left: 6),
+            //           child: Text('English ›', style: TextStyle(color: Colors.black, fontWeight: FontWeight.w500)),
+            //         )
+            //       ],
+            //     ),
+            //   )
+            ],
+          )),
         ],
-      )),
-      backgroundColor: bgRed,
+      ),
+      backgroundColor: Colors.white,
     );
   }
 }
