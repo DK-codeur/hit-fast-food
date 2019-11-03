@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:hit_fast_food/src/providers/auth.dart';
 import 'package:hit_fast_food/src/providers/orders.dart';
+import 'package:hit_fast_food/src/screens/Dashboard.dart';
 import 'package:hit_fast_food/src/shared/colors.dart';
 import 'package:provider/provider.dart';
 
@@ -18,11 +21,35 @@ class _CartScreenState extends State<CartScreen> {
   final _lieulivraisonFocus = FocusNode();
   final _telephoneFocus = FocusNode();
 
-  final _form = GlobalKey<FormState>();
+  final nomController = TextEditingController();
+  final adController = TextEditingController();
+  final phoneController = TextEditingController();
 
+  final _form = GlobalKey<FormState>();
+   var _isLoading = false;  
+
+  Map<String, String> _deliveryData = {
+    'name': '',
+    'adress': '',
+    'phone': '',
+  };
+
+
+  Future<void> submit() async {
+    if(!_form.currentState.validate()) {
+      return;
+    }
+
+    _form.currentState.save();
+    setState(() {
+      _isLoading = true;
+    });
+
+  }
 
   @override
   Widget build(BuildContext context) {
+    
     final cart = Provider.of<Cart>(context);
 
     return Scaffold(
@@ -91,13 +118,13 @@ class _CartScreenState extends State<CartScreen> {
             ),
 
             Expanded(
-              child: OrderButton(cart: cart),
-              // child: RaisedButton(
-              //   color: primaryColor,
-              //   child: new Text('Je commande', style: TextStyle(color: Colors.white),),
+               
+              child: RaisedButton(
+                color: primaryColor,
+                child: new Text('Je commande', style: TextStyle(color: Colors.white),),
 
-              //   onPressed: ((cart.totalAmount.toInt()) > 0) ? dialogueConfirm : null
-              // ),
+                onPressed: ((cart.totalAmount.toInt()) > 0) ? dialogueConfirm : null
+              ),
 
               // child: OrderButton(cart: cart,)
             )
@@ -109,14 +136,14 @@ class _CartScreenState extends State<CartScreen> {
 
     
 
-
+//dialog confirm
   Future<Null> dialogueConfirm() async {
-
-    return showDialog(
+      return showDialog(
         context: context,
         barrierDismissible: false,
 
         builder: (BuildContext context) {
+          final cart = Provider.of<Cart>(context);
           return new SimpleDialog(
             title: Text(
               'Confirmez votre commande', 
@@ -135,6 +162,8 @@ class _CartScreenState extends State<CartScreen> {
                     SizedBox(height: 20),
                   
                     TextFormField(
+                      controller: nomController,
+                      autovalidate: true,
                       keyboardType: TextInputType.text,
                       decoration: InputDecoration(
                         hintText: "Nom complet",
@@ -161,12 +190,24 @@ class _CartScreenState extends State<CartScreen> {
 
                         return null;
                       },
+
+                      // onSaved: (value) {
+                      //   _deliveryData['nom'] = value;
+                      // },
+
+                      onChanged: (value) {
+                        setState(() {
+                          _deliveryData['name'] = value;
+                        });
+                      },
                       
                     ),
 
                     SizedBox(height: 25,),
 
                      TextFormField(
+                      controller: adController,
+                      autovalidate: true,
                       keyboardType: TextInputType.text,
                       decoration: InputDecoration(
                         hintText: "Lieu de livraison",
@@ -194,12 +235,25 @@ class _CartScreenState extends State<CartScreen> {
 
                         return null;
                       },
+
+                      // onSaved: (value) {
+                      //   _deliveryData['adress'] = value;
+                      // },
+
+                      onChanged: (value) {
+                        setState(() {
+                          _deliveryData['adress'] = value;
+                        });
+                      },
                     ),
 
                     SizedBox(height: 25,),
 
                      TextFormField(
+                      controller: phoneController,
+                      autovalidate: true,
                       keyboardType: TextInputType.phone,
+                      maxLength: 8,
                       decoration: InputDecoration(
                         hintText: "Téléphone",
                         icon: Icon(Icons.phone_iphone),
@@ -223,6 +277,16 @@ class _CartScreenState extends State<CartScreen> {
 
                         return null;
                       },
+
+                      // onSaved: (value) {
+                      //   _deliveryData['phone'] = value;
+                      // },
+
+                      onChanged: (value) {
+                        setState(() {
+                          _deliveryData['phone'] = value;
+                        });
+                      },
                       
                     ),
 
@@ -240,16 +304,19 @@ class _CartScreenState extends State<CartScreen> {
                           onPressed: ()=> Navigator.pop(context),
                         ),
 
-                        RaisedButton(
-                          color: primaryColor,
-                          child: Text(
-                            'Je confirme',
-                            style: TextStyle(color: Colors.white)
-                          ),
-                          onPressed: () {},
+                      (nomController.value != null && adController.value != null && phoneController.value != null) 
+                      ? OrderButton(
+                          cart: cart,
+                          userId: Provider.of<Auth>(context).userId,
+                          name: _deliveryData['name'],
+                          adress: _deliveryData['adress'],
+                          phone: _deliveryData['phone'],
                         )
 
-                        
+                      : RaisedButton(
+                        child: Text('En cours...'),
+                        onPressed: null,
+                      ),                        
                       ],
                     )
 
@@ -275,9 +342,17 @@ class OrderButton extends StatefulWidget {
   const OrderButton({
     Key key,
     @required this.cart,
+    @required this.userId,
+    @required this.name,
+    @required this.adress,
+    @required this.phone,
   }) : super(key: key);
 
   final Cart cart;
+  final String userId;
+  final String name;
+  final String adress;
+  final String phone;
 
   @override
   _OrderButtonState createState() => _OrderButtonState();
@@ -288,35 +363,53 @@ class _OrderButtonState extends State<OrderButton> {
 
   @override
   Widget build(BuildContext context) {
-    return RaisedButton(
-       color: primaryColor,
-
+    return Container(
       child: (_isLoading)
-        ? CircularProgressIndicator() 
-        : Text(
-          'Je commande',
-          style: TextStyle(color: Colors.white)
-        ),
-        
-      onPressed: (widget.cart.totalAmount <= 0 || _isLoading) 
-      ? null 
-      :  () async {
+      ?  CircularProgressIndicator() 
+      : RaisedButton(
+         color: primaryColor,
 
-        setState(() {
-          _isLoading = true;
-        });
+        child:Text(
+            'Je confirme',
+            style: TextStyle(color: Colors.white)
+          ),
+          
+        onPressed: (widget.cart.totalAmount <= 0 || _isLoading) 
+        ? null 
+        :  () async {
 
-        Provider.of<Orders>(context, listen: false).addOrder(
-          widget.cart.items.values.toList(), 
-          widget.cart.totalAmount
-        );
+          setState(() {
+            _isLoading = true;
+          });
 
-        setState(() {
-          _isLoading = false;
-        });
 
-        widget.cart.clear();
-      },
+          await Provider.of<Orders>(context, listen: false).addOrder(
+            widget.cart.items.values.toList(), 
+            widget.cart.totalAmount,
+            widget.userId,
+            widget.name,
+            widget.adress,
+            widget.phone,
+          );
+
+          setState(() {
+            _isLoading = false;
+          });
+
+          widget.cart.clear();
+
+          Navigator.of(context).pushReplacementNamed(Dashboard.routeName);
+
+          Fluttertoast.showToast(
+            msg: 'Commande passée avec succès !',
+            toastLength: Toast.LENGTH_LONG, 
+            gravity: ToastGravity.BOTTOM,
+            backgroundColor: primaryColor,
+            textColor: Colors.white,
+            fontSize: 14.0
+          );
+        },
+      ),
     );
   }
 }

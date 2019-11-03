@@ -1,5 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:hit_fast_food/models/http_exception.dart';
+import 'package:hit_fast_food/src/providers/auth.dart';
+import 'package:hit_fast_food/src/screens/Dashboard.dart';
+import 'package:page_transition/page_transition.dart';
 import 'package:hit_fast_food/src/shared/colors.dart';
+import 'package:provider/provider.dart';
 import './login.dart';
 import '../shared/colors.dart';
 
@@ -15,17 +21,51 @@ class _SignUpState extends State<SignUp> {
   bool _toggleConfirmVisibility = true;
 
   //request focus
-  final _prenomsFocus = FocusNode();
+  final _emailFocus = FocusNode();
   final _telephoneFocus = FocusNode();
   final _passwordFocus = FocusNode();
   final _confirmpasswordFocus = FocusNode();
 
+  final _passwordController = TextEditingController();
+  var _isLoading = false;
+
   final _form = GlobalKey<FormState>();
+
+  Map<String, String> _authData = {
+    'email': '',
+    'password': '',
+
+    'id': '',
+    'email': '',
+    'username': '',
+    'phone': '',
+
+  };
+
+
+  void _showErrorDialog(String message) {
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text('An error occurred'),
+        content: Text(message),
+
+        actions: <Widget>[
+          FlatButton(
+            child: Text('OK'),
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+          )
+        ],
+      )
+    );
+  }
 
   Widget _buildNameTextField() {
     return TextFormField(
       decoration: InputDecoration(
-        hintText: "Nom",
+        hintText: "Nom Complet",
         icon: Icon(Icons.account_box),
         hintStyle: TextStyle(
           color: Color(0xFFBDC2CB),
@@ -35,7 +75,7 @@ class _SignUpState extends State<SignUp> {
 
       textInputAction: TextInputAction.next,
       onFieldSubmitted: (_) {
-        FocusScope.of(context).requestFocus(_prenomsFocus);
+        FocusScope.of(context).requestFocus(_emailFocus);
       },
 
       //onSave if method here
@@ -52,14 +92,19 @@ class _SignUpState extends State<SignUp> {
         return null;
       },
 
+      onSaved: (value) {
+        _authData['username'] = value;
+      },
+
     );
   }
 
-   Widget _buildLastNameTextField() {
+   Widget _buildEmailTextField() {
     return TextFormField(
+      keyboardType: TextInputType.emailAddress,
       decoration: InputDecoration(
-        hintText: "Prenoms",
-        icon: Icon(Icons.account_box),
+        hintText: "Email",
+        icon: Icon(Icons.email),
         hintStyle: TextStyle(
           color: Color(0xFFBDC2CB),
           fontSize: 18.0,
@@ -67,22 +112,21 @@ class _SignUpState extends State<SignUp> {
       ),
 
       textInputAction: TextInputAction.next,
-      focusNode: _prenomsFocus,
+      focusNode: _emailFocus,
       onFieldSubmitted: (_) {
         FocusScope.of(context).requestFocus(_telephoneFocus);
       },
 
 
       validator: (value) {
-        if (value.isEmpty) {
-          return 'Entrez votre prenoms';
+        if (value.isEmpty || !value.contains('@')) {
+          return 'Email invalide';
         }
-
-        if (value.length == 1) {
-          return 'prenoms trop court';
-        }
-
         return null;
+      },
+
+      onSaved: (value) {
+        _authData['email'] = value;
       },
 
     );
@@ -119,11 +163,16 @@ class _SignUpState extends State<SignUp> {
         return null;
       },
 
+      onSaved: (value) {
+        _authData['phone'] = value;
+      },
+
     );
   }
 
   Widget _buildPasswordTextField() {
     return TextFormField(
+      controller: _passwordController,
       decoration: InputDecoration(
         hintText: "Password",
         icon: Icon(Icons.lock),
@@ -160,6 +209,10 @@ class _SignUpState extends State<SignUp> {
         return null;
       },
 
+      onSaved: (value) {
+        _authData['password'] = value;
+      },
+
     );
   }
 
@@ -188,36 +241,99 @@ class _SignUpState extends State<SignUp> {
       obscureText: _toggleConfirmVisibility,
 
       validator: (value) {
-        if (value.isEmpty) {
-          return 'confirmez votre mot de passe';
-        }
-
-        if (value.length < 6 ) {
-          return '6 caractère minimum';
+        if (value != _passwordController.text) {
+          return 'Les mot de pass ne concordent pas';
         }
 
         return null;
-      },
+      }
 
     );
   }
 
   @override
   void dispose() {
-    _prenomsFocus.dispose();
+    _emailFocus.dispose();
     _telephoneFocus.dispose();
     _passwordFocus.dispose();
     _confirmpasswordFocus.dispose();
     super.dispose();
   }
 
-  // Future<void> _saveForm() async {
-  //   final _isValid = _form.currentState.validate();
+  //Submit
 
-  //   if (!_isValid) {
-  //     return ;
-  //   }
-  // }
+  void _submit() async {
+    if(!_form.currentState.validate()) {
+      //invalid
+      return;
+    }
+
+    _form.currentState.save();
+    setState(() {
+      _isLoading = true;
+    });
+
+    //connect / log
+    try{
+      await Provider.of<Auth>(context, listen: false).signUp(
+        _authData['email'],
+        _authData['password'],
+
+        Provider.of<Auth>(context, listen: false).userId,//id
+        _authData['email'], //emailU == email
+        _authData['username'],
+        _authData['phone'],
+      );
+    } on HttpException catch(error) {
+      var erroMessage = 'Erreur réesayez';
+
+      if(error.toString().contains('EMAIL_EXISTS')) {
+        erroMessage = 'Cet email existe deja';
+      } else if(error.toString().contains('INVALID_EMAIL')) {
+        erroMessage = 'Desolé cet email n\'est pas valide';
+      } else if(error.toString().contains('WEAK_PASSWORD')) {
+        erroMessage = 'Mot de passe trop court, 6 caratère min.';
+      } 
+
+      _showErrorDialog(erroMessage);
+
+    } catch(error) {
+      var erroMessage = 'Authentification impossible veillez réessayer $error';
+       _showErrorDialog(erroMessage);
+    }
+
+    setState(() {
+      _isLoading = false;
+    });
+
+    Navigator.of(context).pushReplacement(
+      PageTransition(
+        type: PageTransitionType.fade, 
+        duration: Duration(seconds: 3),
+        child: Dashboard()
+      )
+    );
+
+    (Provider.of<Auth>(context, listen: false).isAuth ) 
+    ? Fluttertoast.showToast(
+      msg: 'Connection reussi !',
+      toastLength: Toast.LENGTH_LONG, 
+      gravity: ToastGravity.BOTTOM,
+      backgroundColor: Colors.green,
+      textColor: Colors.white,
+      fontSize: 13.0
+    )
+
+    : Fluttertoast.showToast(
+      msg: 'Connection Echoue !',
+      toastLength: Toast.LENGTH_LONG, 
+      gravity: ToastGravity.BOTTOM,
+      backgroundColor: Colors.orange,
+      textColor: Colors.white,
+      fontSize: 13.0
+    );
+
+  }
 
 
   @override
@@ -243,15 +359,15 @@ class _SignUpState extends State<SignUp> {
             children:<Widget>[ 
                Container(
               height: MediaQuery.of(context).size.height / 2.5, 
-              // color: primaryColor,
               decoration: BoxDecoration(
-                image: DecorationImage(
-                  fit: BoxFit.cover,
-                  image: AssetImage(
-                    'images/drawerimag.jpg',
+              color: primaryColor,
+                // image: DecorationImage(
+                //   fit: BoxFit.cover,
+                //   image: AssetImage(
+                //     'images/drawerimag.jpg',
                     
-                  )
-                )
+                //   )
+                // )
               ),
             ),
 
@@ -266,7 +382,7 @@ class _SignUpState extends State<SignUp> {
                   height: 30.0,
                 ),
 
-                Form(
+                Form( //Form
                   key: _form,
 
                   child: Card(
@@ -279,7 +395,7 @@ class _SignUpState extends State<SignUp> {
                           SizedBox(
                             height: 20.0,
                           ),
-                          _buildLastNameTextField(),
+                          _buildEmailTextField(),
                           SizedBox(
                             height: 20.0,
                           ),
@@ -301,27 +417,18 @@ class _SignUpState extends State<SignUp> {
                   height: 30.0,
                 ),
                 Container(
-                  child: OutlineButton(
-                    onPressed: (){},
+                  
+                  child: (_isLoading) 
+                ?   CircularProgressIndicator() 
+                :   OutlineButton(
+                    onPressed: _submit,
+
                     child: Text('S\'inscrire', textScaleFactor: 1.6, style: TextStyle(fontFamily: 'Poppins'),),
                     textColor: primaryColor,
                     borderSide: BorderSide(color: primaryColor),
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4))
                   ),
-                //   height: 50.0,
-                //   decoration: BoxDecoration(
-                //       color: Colors.grey[900],
-                //       borderRadius: BorderRadius.circular(25.0)),
-                //   child: Center(
-                //     child: Text(
-                //       "S'inscrire",
-                //       style: TextStyle(
-                //         color: Colors.white,
-                //         fontSize: 18.0,
-                //         fontWeight: FontWeight.bold,
-                //       ),
-                //     ),
-                //   ),
+                
                 ),
                 Divider(
                   height: 20.0,
@@ -339,8 +446,15 @@ class _SignUpState extends State<SignUp> {
                     SizedBox(width: 10.0),
                     GestureDetector(
                       onTap: (){
-                        Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (BuildContext context) => Login()));
+                        Navigator.of(context).pushReplacement(
+                          PageTransition(
+                            type: PageTransitionType.leftToRight, 
+                            duration: Duration(seconds: 1),
+                            child: Login()
+                          )
+                        );
                       },
+
                       child: Text(
                         "Connectez-vous",
                         style: TextStyle(
@@ -349,8 +463,12 @@ class _SignUpState extends State<SignUp> {
                             fontSize: 18.0),
                       ),
                     ),
+
+                    
                   ],
                 ),
+
+                SizedBox(height: 20,)
               ],
             ),
         ),

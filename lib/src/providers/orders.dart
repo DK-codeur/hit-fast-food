@@ -1,5 +1,5 @@
-// import 'dart:convert';
-// import 'package:http/http.dart' as http;
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 
 import 'package:flutter/material.dart';
 import './cart_provider.dart';
@@ -22,24 +22,28 @@ class OrderItem {
 
 class Orders with ChangeNotifier {
   List<OrderItem> _orders = [];
+  final String authToken;
+  final String userId;
+
+  Orders({this.authToken, this.userId});
 
   List<OrderItem> get orders {
     return [..._orders];
   }
 
 
-  void addOrder(List<CartItem> cartProducts, double total) {
-    _orders.insert(
-      0,
-      OrderItem(
-        id: DateTime.now().toString(),
-        amount: total,
-        dateTime: DateTime.now(),
-        products: cartProducts,
-      ),
-    );
-    notifyListeners();
-  }
+  // void addOrder(List<CartItem> cartProducts, double total) {
+  //   _orders.insert(
+  //     0,
+  //     OrderItem(
+  //       id: DateTime.now().toString(),
+  //       amount: total,
+  //       dateTime: DateTime.now(),
+  //       products: cartProducts,
+  //     ),
+  //   );
+  //   notifyListeners();
+  // }
 
   // Future<void> fetchAndSetOrders() async {
   //   const url = '';
@@ -73,36 +77,41 @@ class Orders with ChangeNotifier {
 
   // }
 
-  // Future<void> addOrder(List<CartItem> cartProducts, double total) async {
-  //   const url = '';
-  //   final timeStamp = DateTime.now();
-  //   final response = await http.post(
-  //     url,
-  //     body: json.encode({
-  //       'amount': total,
-  //       'dateTime': timeStamp.toIso8601String(),
-  //       'products': cartProducts.map((cp) => {
-  //         'id': cp.id,
-  //         'title': cp.title,
-  //         'quantity': cp.quantity,
-  //         'price': cp.price,
-  //         'image': cp.image
+  Future<void> addOrder(List<CartItem> cartProducts, double total, String idU, String name, String adress, String phone) async {
+    final url = 'https://hit78f-food3b.firebaseio.com/orders.json';
+    final timeStamp = DateTime.now();
+    await http.post(
+      url,
+      body: json.encode({
+        'amount': total,
+        'dateTime': timeStamp.toIso8601String(),
+        'userId': idU,
+        'name': name,
+        'adress': adress,
+        'phone': phone,
+        'products': cartProducts.map((cp) => {
+          'id': cp.id,
+          'title': cp.title,
+          'quantity': cp.quantity,
+          'price': cp.price,
+          'image': cp.image,
+          'isMenu': cp.isMenu,
 
-  //       }).toList()
-  //     })
-  //   );
+        }).toList()
+      })
+    );
 
-  //   _orders.insert(
-  //     0, 
-  //     OrderItem(
-  //       id: json.decode(response.body)['name'],
-  //       amount: total,
-  //       dateTime: timeStamp,
-  //       products: cartProducts,
-  //     )
-  //   );
+    // _orders.insert(
+    //   0, 
+    //   OrderItem(
+    //     id: json.decode(response.body)['name'],
+    //     amount: total,      
+    //     dateTime: timeStamp,
+    //     products: cartProducts,
+    //   )
+    // );
 
-  //   notifyListeners();
-  // }
+    // notifyListeners();
+  }
 
 }

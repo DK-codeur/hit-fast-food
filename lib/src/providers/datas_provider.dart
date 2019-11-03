@@ -14,7 +14,6 @@ import './category.dart';
     //burger
   ];
 
-
   List<Product> get foods {
     return [..._foods];
   }
@@ -26,7 +25,7 @@ import './category.dart';
     try{
       final response = await  http.get(url);
       final extractedData = json.decode(response.body) as Map<String, dynamic>;
-      print(extractedData);
+      // print(extractedData);
 
       if(extractedData == null) {
         return;
@@ -38,7 +37,7 @@ import './category.dart';
 
           idPdt: prodId,
           title: prodData['title'],
-          price: 1000,
+          price: prodData['price'],
           menuPrice: prodData['menuPrice'],
           image: prodData['image'],
           isMenu: prodData['isMenu'],
@@ -62,6 +61,14 @@ import './category.dart';
     return _foods.where((fd) => fd.cat == cat).toList();
   }
 
+  List<Product> foodsDiscount() {
+    return _foods.where((fd) => fd.discount != 0).toList();
+  }
+
+  List<Product> foodsByFakeCatId(int fakeId) {
+    return _foods.where((fd) => fd.cat == fakeId).toList();
+  }
+
   Product findById(String id) {
     return _foods.firstWhere( (prod) => prod.idPdt == id);
   }
@@ -81,76 +88,7 @@ import './category.dart';
 
   List<Category> _categorie = [
 
-  Category(
-    id: '2',
-    name: 'Burger',
-    image: 'burgerCat.png',
-    // onPress: null, 
-  ),
-
-  Category(
-    id: '1',
-    name: 'Chicken',
-    image: 'chickenCat.png',
-    // onPress: null,
-  ),
-
-  Category(
-    id: '3',
-    name: 'Tacos',
-    image: 'tacosCat.png',
-    // onPress: null,
-  ),
-
-  // Category(
-  //   id: 4,
-  //   name: 'Sandwich',
-  //   image: 'sandwichCat.png',
-  //  onPress: null,
-  // ),
-
-  Category(
-    id: '6',
-    name: 'Grillarde & platter',
-    image: 'grillCat.png',
-    // onPress: null, 'grillCat.png'
-  ),
-
-  Category(
-    id: '4',
-    name: 'Salades',
-    image: 'saladCat.png',
-    // onPress: null,
-  ),
-
-  // Category(
-  //   id: 7,
-  //   name: 'Gourmandises',
-  //   image: 'gourmanCat.png',
-  //   // onPress: null,
-  // ),
-
-  // Category(
-  //   id: 8,
-  //   name: 'Boissons',
-  //   image: 'boissonCat.png',
-  //   // onPress: null,
-  // ),
-
-  Category(
-    id: '5',
-    name: 'Sandwich & Hot Dog',
-    image: 'hotdogCat.png',
-    // onPress: null,
-  ),                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         
-
-  // Category(
-  //   id: 10,
-  //   name: 'Extra', 
-  //   image: 'extraCat.png',
-  //   // onPress: null,
-  // ),
-];
+  ];
 
 
  List<Category> get categorie {
@@ -160,12 +98,12 @@ import './category.dart';
 
   
   Future<void> fetchAndSetCategory() async {
-    const url = '';
+    const url = 'https://hit78f-food3b.firebaseio.com/categories.json';
 
     try{
       final response = await http.get(url);
-      final extractedData = json.decode(response.body) as Map<dynamic, dynamic>;
-      print(extractedData.toString());
+      final extractedData = json.decode(response.body) as Map<String, dynamic>;
+      // print(extractedData);
 
       if (extractedData == null) {
         return;
@@ -177,7 +115,8 @@ import './category.dart';
 
           id: catId,
           name: catData['name'],
-          image: catData['image']
+          image: catData['image'],
+          fakeId: catData['id']
 
         ));
       });
@@ -196,10 +135,6 @@ import './category.dart';
   Category findById(String id) {
     return _categorie.firstWhere( (categ) => categ.id == id);
   }
-
-  
-
-
 
 
 }

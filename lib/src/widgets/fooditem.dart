@@ -1,8 +1,8 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:hit_fast_food/src/providers/product.dart';
+import 'package:page_transition/page_transition.dart';
 import 'package:provider/provider.dart';
-import 'package:transparent_image/transparent_image.dart';
-// import 'package:hit_fast_food/src/widgets/snac.dart';
 import '../screens/productPage.dart';
 import '../shared/colors.dart';
 import '../shared/styles.dart';
@@ -12,7 +12,7 @@ class FoodItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
+    
     final product = Provider.of<Product>(context, listen: false);
 
     return Container(
@@ -27,19 +27,41 @@ class FoodItem extends StatelessWidget {
         children: <Widget>[
           InkWell( //image
 
+            // onTap: () {
+            //   Navigator.of(context).pushNamed(
+            //     ProductPage.routeName,
+            //     arguments: product.idPdt
+            //   );
+            // },
+
+            // onTap: () => Navigator.push( 
+            //   context,
+            //   CupertinoPageRoute(
+            //     builder: (context) => ProductPage(
+            //       routeArgAsid: product.idPdt,
+            //     ),
+            //   )
+            // ),
+
             onTap: () {
-              Navigator.of(context).pushNamed(
-                ProductPage.routeName,
-                arguments: product.idPdt
+              Navigator.push(
+                context, 
+                PageTransition(
+                  type: PageTransitionType.rightToLeft, 
+                  duration: Duration(seconds: 1),
+                  child: ProductPage(
+                    routeArgAsid: product.idPdt,
+                  )
+                )
               );
             },
 
             child: Container(
               decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(10)
-            ),
-            width: 215,
-            height: 185,
+                borderRadius: BorderRadius.circular(10)
+              ),
+              width: 200,
+              height: 185,
             
               child: Card(
                   color: white,
@@ -49,14 +71,17 @@ class FoodItem extends StatelessWidget {
                   ),
                   child: Hero(
                     transitionOnUserGestures: true,
-                    tag: product.title,
-                    child: Container(
-                      child: FadeInImage.memoryNetwork(
-                      placeholder: kTransparentImage,
+                    tag: product.idPdt,
+                    // child: Image.network(
+                    //    product.image,
+                    //    fit: BoxFit.contain
+                    // )
+                      child: FadeInImage.assetNetwork(
+                      placeholder: 'images/load_img.png',
                       image: product.image,
                       fit: BoxFit.contain,
                     ),
-                    )
+
                   )
               )
             ),

@@ -1,22 +1,16 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:hit_fast_food/src/providers/product.dart';
+import 'package:hit_fast_food/src/screens/productPage.dart';
 import 'package:hit_fast_food/src/shared/colors.dart';
-import 'package:page_transition/page_transition.dart';
+import 'package:hit_fast_food/src/shared/styles.dart';
 import 'package:provider/provider.dart';
 
-import '../providers/product.dart';
-import '../screens/productPage.dart';
-import '../shared/styles.dart';
-
-class CategoryStoreItem extends StatelessWidget {
-  
-
+class PromoItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
-    // final categoryId = ModalRoute.of(context).settings.arguments as int;
-    final reqCatItem  = Provider.of<Product>(context, listen: false);
-
+    final reqProductPromoItem = Provider.of<Product>(context, listen: false);
+    
     return Container(
       width: 150,
       height: 200,
@@ -27,34 +21,21 @@ class CategoryStoreItem extends StatelessWidget {
       margin: EdgeInsets.only(left: 5),
       child: Stack(
         children: <Widget>[
-
-          GestureDetector( //image
-            // onTap: () { 
-            //   Navigator.of(context).pushNamed(
-            //     ProductPage.routeName,
-            //     arguments: reqCatItem.idPdt
-            //   );
-            // },
+          InkWell( //image
 
             onTap: () {
-              Navigator.push(
-                context, 
-                PageTransition(
-                  type: PageTransitionType.rightToLeft, 
-                  duration: Duration(seconds: 1),
-                  child: ProductPage(
-                    routeArgAsid: reqCatItem.idPdt,
-                  )
-                )
+              Navigator.of(context).pushNamed(
+                ProductPage.routeName,
+                arguments: reqProductPromoItem.idPdt
               );
             },
 
             child: Container(
-                decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(10)
-              ),
-              width: 205,
-              height: 185,
+              decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(10)
+            ),
+            width: 205,
+            height: 185,
             
               child: Card(
                   color: white,
@@ -62,15 +43,18 @@ class CategoryStoreItem extends StatelessWidget {
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10)
                   ),
-                    child: Hero(
-                      tag: reqCatItem.idPdt,
+                  child: Hero(
+                    transitionOnUserGestures: true,
+                    tag: reqProductPromoItem.title,
+                    child: Container(
                       child: FadeInImage.assetNetwork(
                         alignment: Alignment.topCenter,
                         placeholder: 'images/load_img.png',
-                        image: reqCatItem.image,
+                        image: reqProductPromoItem.image,
                         fit: BoxFit.contain,
                       ),
                     )
+                  )
               )
             ),
           ),
@@ -82,22 +66,22 @@ class CategoryStoreItem extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                Text(reqCatItem.title, style: foodNameText),
-                Text('${reqCatItem.price.toInt()} F', style: priceText),
+                Text(reqProductPromoItem.title, style: foodNameText),
+                Text('${reqProductPromoItem.price.toInt()} F', style: priceText),
               ],
             )
           ),
           Positioned( 
               top: 10,
               left: 10,
-              child: (reqCatItem.discount != 0) //discount
+              child: (reqProductPromoItem.discount != 0) //discount
                   ? Container(
                       padding: EdgeInsets.only(
                           top: 5, left: 10, right: 10, bottom: 5),
                       decoration: BoxDecoration(
                           color: Colors.grey[600],
                           borderRadius: BorderRadius.circular(50)),
-                      child: Text('-' + '${reqCatItem.discount.toInt()}' + '%',
+                      child: Text('-' + '${reqProductPromoItem.discount.toInt()}' + '%',
                           style: TextStyle(
                               color: Colors.white,
                               fontWeight: FontWeight.w700
@@ -110,5 +94,4 @@ class CategoryStoreItem extends StatelessWidget {
     );
 
   }
-
 }

@@ -39,7 +39,8 @@ class _DealsState extends State<Deals> {
         sectionHeader(widget.dealTitle, onViewMore: widget.onViewMore),
         SizedBox(
           height: 250,
-          child: ListView.builder(
+          child: (dealFood.length != 0) 
+          ? ListView.builder(
             itemCount: dealFood.length,
             scrollDirection: Axis.horizontal,
             itemBuilder: (ctx, index) => ChangeNotifierProvider.value (
@@ -48,17 +49,9 @@ class _DealsState extends State<Deals> {
                 //...id, title 
               )
             ),
-            // children: (widget.items != null)
-                // <Widget>[
-                //     Container(
-                //       margin: EdgeInsets.only(left: 15),
-                //       child: Text(
-                //         'Pas disponible pour l\'instant',
-                //         style: taglineText
-                //       ),
-                //     )
-                //   ],
-          ),
+            
+          )
+          : Center(child: Text('pas de produit disponible')),
         ),
 
         Container(margin: EdgeInsets.only(bottom: 20),)

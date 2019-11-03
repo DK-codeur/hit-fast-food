@@ -1,9 +1,13 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:hit_fast_food/src/providers/cart_provider.dart';
 import 'package:hit_fast_food/src/providers/datas_provider.dart';
+import 'package:hit_fast_food/src/screens/promo_screen.dart';
 import 'package:hit_fast_food/src/screens/store.dart';
 import 'package:hit_fast_food/src/shared/my_flutter_app_icons.dart';
 import 'package:hit_fast_food/src/widgets/badge.dart';
+import 'package:page_transition/page_transition.dart';
 import 'package:provider/provider.dart';
 import '../shared/main_drawer.dart';
 import '../shared/styles.dart';
@@ -16,7 +20,7 @@ class Dashboard extends StatefulWidget {
 
   final String pageTitle;
 
-  Dashboard({Key key, this.pageTitle}) : super(key: key);
+  Dashboard({Key key, this.pageTitle}) : super(key: key); //311217
 
   @override
   _DashboardState createState() => _DashboardState();
@@ -53,6 +57,12 @@ class _DashboardState extends State<Dashboard> {
           _isLoading = false; 
         });
       });
+
+      Provider.of<CategoriesProvider>(context).fetchAndSetCategory().then((_) {
+        setState(() {
+          _isLoading = false; 
+        });
+      });
     }
 
     _isInit = false;
@@ -63,7 +73,7 @@ class _DashboardState extends State<Dashboard> {
   @override
   Widget build(BuildContext context) {
     final _tabs = [
-      Center(child: Text('Aucun produits disponible')),
+      PromoScreen(),
       Store(),
       Center(child: Text('Ma monnaie')),
     ];
@@ -92,16 +102,24 @@ class _DashboardState extends State<Dashboard> {
 
               child: IconButton(
                 icon: Icon(MyFlutterApp.shopping_bag),
-                onPressed: () {
-                  Navigator.of(context).pushNamed(CartScreen.routeName);
-                },
+                onPressed: () => Navigator.push( 
+                  context,
+                  PageTransition(
+                  type: PageTransitionType.rightToLeft, 
+                  duration: Duration(seconds: 1),
+                  child: CartScreen()
+                )
+                ),
               ),
+
+
+
             ) 
           ],
         ),
 
         body:(_isLoading) 
-          ? Center(child: CircularProgressIndicator())
+          ? Center(child: SpinKitChasingDots(color: Colors.red, size: 50,))
           : _tabs[_selectedIndex],
         // FutureBuilder(
         //   future: Provider.of<ProductsProvider>(context).fetchAndSetProduct(),
@@ -126,8 +144,8 @@ class _DashboardState extends State<Dashboard> {
 
         bottomNavigationBar: BottomNavigationBar(
           
-          iconSize: 18,
-          backgroundColor: Colors.white.withOpacity(0.4),
+          iconSize: 16,
+          backgroundColor: Colors.white,
           elevation: 15.0,
           type: BottomNavigationBarType.shifting,
           currentIndex: _selectedIndex,

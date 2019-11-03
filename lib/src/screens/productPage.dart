@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:hit_fast_food/src/providers/datas_provider.dart';
+import 'package:page_transition/page_transition.dart';
 import 'package:provider/provider.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:transparent_image/transparent_image.dart';
+// import 'package:transparent_image/transparent_image.dart';
 
 import '../providers/cart_provider.dart';
 import '../widgets/badge.dart';
@@ -15,9 +16,9 @@ import 'cart_screen.dart';
 
 class ProductPage extends StatefulWidget {
   static const routeName = '/productPage';
-  final String pageTitle;
- 
-  ProductPage({Key key, this.pageTitle,}) : super(key: key);
+  final String routeArgAsid;
+
+  ProductPage({this.routeArgAsid});
 
   @override
   _ProductPageState createState() => _ProductPageState();
@@ -26,12 +27,13 @@ class ProductPage extends StatefulWidget {
 class _ProductPageState extends State<ProductPage> {
   // double _rating = 4;
   int _quantity = 1;
-  int menuSelected = -1;
+  int menuSelected = 0;
   @override
   Widget build(BuildContext context) {
 
     final cart = Provider.of<Cart>(context, listen: false);
-    final foodId = ModalRoute.of(context).settings.arguments as String;
+    // final foodId = ModalRoute.of(context).settings.arguments as String;
+    final foodId = widget.routeArgAsid;
     // final foodId = routeArg['idItem'];
     //foods.firstWhere( (food) => food.idPdt == foodId);
 
@@ -59,7 +61,13 @@ class _ProductPageState extends State<ProductPage> {
                 icon: Icon(MyFlutterApp.shopping_bag, color: primaryColor,),
                 iconSize: 27,
                 onPressed: () {
-                  Navigator.of(context).pushNamed(CartScreen.routeName);
+                  Navigator.of(context).push(
+                    PageTransition(
+                      type: PageTransitionType.rightToLeft, 
+                      duration: Duration(seconds: 1),
+                      child: CartScreen()
+                    )
+                  );
                 },
               ),
             )
@@ -76,7 +84,7 @@ class _ProductPageState extends State<ProductPage> {
                     Align(
                       alignment: Alignment.center,
                       child: Container(
-                      margin: EdgeInsets.only(top: 100, bottom: 40),
+                      margin: EdgeInsets.only(top: 100, bottom: 20),
                       padding: EdgeInsets.only(top: 120, bottom: 50, right: 25, left: 25),
                       width: MediaQuery.of(context).size.width * 0.90,
                       child: Column(
@@ -87,7 +95,7 @@ class _ProductPageState extends State<ProductPage> {
                           
                           SizedBox(height: 20,),
 
-                          (reqPdt.menuPrice != null) 
+                          (reqPdt.menuPrice != 0) 
                           ? //if reqPdt.menuPrice != null
 
                           Container(
@@ -217,16 +225,19 @@ class _ProductPageState extends State<ProductPage> {
                             : () {
                               cart.addItem(
                                 reqPdt.idPdt, 
-                               (reqPdt.menuPrice != 0 && (menuSelected == 1)) ? reqPdt.menuPrice  : reqPdt.price,
+                               (reqPdt.menuPrice != 0 && (menuSelected == 1)) ? reqPdt.menuPrice.toDouble()  : reqPdt.price,
                                 reqPdt.title, 
-                                reqPdt.image, 
                                 _quantity,
-                                (reqPdt.isMenu != '') ? reqPdt.isMenu: '',
+                                reqPdt.image, 
+                                (reqPdt.menuPrice != 0 && (menuSelected == 1)) ? reqPdt.isMenu : '',
                               );
 
-                              Navigator.of(context).pushNamed(
-                                CartScreen.routeName
-                              );
+                              Navigator.of(context).push(
+                                PageTransition(
+                                type: PageTransitionType.rightToLeft, 
+                                duration: Duration(seconds: 1),
+                                child: CartScreen()
+                              ),);
 
                                Fluttertoast.showToast(
                                 msg: 'Veuillez valider votre panier',
@@ -243,7 +254,7 @@ class _ProductPageState extends State<ProductPage> {
                             width: 180,
                             child: froyoFlatBtn(
                               'Ajouter au panier', 
-                              ( reqPdt.menuPrice != null && menuSelected < 0) 
+                              ( reqPdt.menuPrice != 0 && menuSelected < 0) 
                               ?  () => Fluttertoast.showToast(
                                   msg: 'Veuillez choisir un plat !',
                                   toastLength: Toast.LENGTH_LONG, 
@@ -256,11 +267,11 @@ class _ProductPageState extends State<ProductPage> {
                               : () {
                               cart.addItem(
                                 reqPdt.idPdt, 
-                                (reqPdt.menuPrice != 0 && (menuSelected == 1)) ? reqPdt.menuPrice  : reqPdt.price, 
+                                (reqPdt.menuPrice != 0 && (menuSelected == 1)) ? reqPdt.menuPrice.toDouble()  : reqPdt.price, 
                                 reqPdt.title, 
-                                reqPdt.image, 
                                 _quantity,
-                                (reqPdt.isMenu != '') ? reqPdt.isMenu: '',
+                                reqPdt.image, 
+                                (reqPdt.menuPrice != 0 && (menuSelected == 1)) ? reqPdt.isMenu : '',
                               );
 
                               Navigator.pop(context);
@@ -300,10 +311,16 @@ class _ProductPageState extends State<ProductPage> {
                         child: SizedBox(
                           width: 240,
                           height: 200,
-                          child: FadeInImage.memoryNetwork(
-                            placeholder: kTransparentImage,
-                            image: reqPdt.image,
-                            
+                          child: Hero(
+                            tag: reqPdt.idPdt,
+                            // child: Image.network(
+                            //   reqPdt.image,
+                            //   fit: BoxFit.cover
+                            // )
+                              child: FadeInImage.assetNetwork(
+                                placeholder: 'images/load_img.png',
+                                image: reqPdt.image,
+                              ),
                           ),
                         ),
                       ),

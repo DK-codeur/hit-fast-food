@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hit_fast_food/src/shared/colors.dart';
 import 'package:hit_fast_food/src/shared/styles.dart';
-// import '../models/cart_provider.dart';
 import 'package:provider/provider.dart';
 import '../providers/cart_provider.dart';
 
@@ -10,7 +9,7 @@ class CartItem extends StatelessWidget {
   final String id;
   final String productId;
   final String title;
-  final int price;
+  final double price;
   final int quantity;
   final String image;
   final String isMenu;
@@ -65,16 +64,19 @@ class CartItem extends StatelessWidget {
       },
 
       child: Card(
-        margin: EdgeInsets.symmetric(horizontal: 15, vertical: 4),
+        margin: EdgeInsets.symmetric(horizontal: 2, vertical: 4),
         child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 3, vertical: 20),
+          padding: EdgeInsets.symmetric(horizontal: 3, vertical: 10),
           child: ListTile(
             title: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
+                
                 Text(title, style: h6),
-                Text('.', style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold)),
                 Text(isMenu, style: TextStyle(color: primaryColor, fontWeight: FontWeight.bold),)
-              ],
+                 
+              ]
+
             ),
             subtitle: Column(
               
@@ -85,22 +87,24 @@ class CartItem extends StatelessWidget {
                   ],
                 ),
                 Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
                     Text('Total : ${(price * quantity).toInt()} F'),
+                    Text('x$quantity', style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),),
                   ],
                 ),
               ],
             ),
 
             leading:  Container(
-                width: 100,
-                height: 100,
+                width: 70,
+                height: 70,
                 child: Image.network(
                   image
                 ),
             ),
 
-            trailing: Text('x$quantity'),
+            // trailing: Text('x$quantity'),
           ),
         ),
       ),

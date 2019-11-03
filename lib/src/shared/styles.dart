@@ -43,7 +43,7 @@ const h4 = TextStyle(
 
 const h4a = TextStyle(
   color: primaryColor,
-  fontSize: 22,
+  fontSize: 19,
   fontWeight: FontWeight.w700,
   fontFamily: 'Poppins');
     

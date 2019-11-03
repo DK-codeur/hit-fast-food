@@ -1,6 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:hit_fast_food/src/providers/auth.dart';
 import 'package:hit_fast_food/src/shared/colors.dart';
+import 'package:hit_fast_food/models/http_exception.dart';
+import 'package:page_transition/page_transition.dart';
+import 'package:provider/provider.dart';
 import './signup.dart';
+import 'Dashboard.dart';
 
 class Login extends StatefulWidget {
   static const routeName = '/login';
@@ -10,27 +16,55 @@ class Login extends StatefulWidget {
 }
 
 class _LoginState extends State<Login> {
+  final _form = GlobalKey<FormState>();
   bool _toggleVisibility = true;
+  final _passwordFocus = FocusNode();
 
-  Widget _buildPhoneTextField() {
+   var _isLoading = false;
+
+
+  Map<String, String> _authData = {
+    'email': '',
+    'password': '',
+  };
+
+  Widget _buildEmailTextField() {
     return TextFormField(
-      keyboardType: TextInputType.number,
+      keyboardType: TextInputType.emailAddress,
       decoration: InputDecoration(
-        hintText: "Telephone",
-        icon: Icon(Icons.phone_iphone),
+        hintText: "Email",
+        icon: Icon(Icons.email),
         hintStyle: TextStyle(
           color: Color(0xFFBDC2CB),
           fontSize: 18.0,
         ),
       ),
+
+      textInputAction: TextInputAction.next,
+      onFieldSubmitted: (_) {
+        FocusScope.of(context).requestFocus(_passwordFocus);
+      },
+
+
+      validator: (value) {
+        if (value.isEmpty || !value.contains('@')) {
+          return 'Email invalide';
+        }
+        return null;
+      },
+
+      onSaved: (value) {
+        _authData['email'] = value;
+      },
+
     );
   }
 
-  Widget _buildPasswordTextField() {
+   Widget _buildPasswordTextField() {
     return TextFormField(
       decoration: InputDecoration(
         hintText: "Password",
-        icon: Icon(Icons.lock_outline),
+        icon: Icon(Icons.lock),
         hintStyle: TextStyle(
           color: Color(0xFFBDC2CB),
           fontSize: 18.0,
@@ -41,14 +75,135 @@ class _LoginState extends State<Login> {
               _toggleVisibility = !_toggleVisibility;
             });
           },
-          icon: _toggleVisibility
-              ? Icon(Icons.visibility_off)
-              : Icon(Icons.visibility),
+          icon: _toggleVisibility ? Icon(Icons.visibility_off) : Icon(Icons.visibility),
         ),
       ),
+
       obscureText: _toggleVisibility,
+      textInputAction: TextInputAction.done,
+      focusNode: _passwordFocus,
+      
+
+       validator: (value) {
+        if (value.isEmpty) {
+          return 'Entrez un mot de passe';
+        }
+
+        if (value.length < 6 ) {
+          return '6 caractère minimum';
+        }
+
+        return null;
+      },
+
+      onSaved: (value) {
+        _authData['password'] = value;
+      },
+
     );
   }
+
+    @override
+  void dispose() {
+    _passwordFocus.dispose();
+    super.dispose();
+  }
+
+   void _showErrorDialog(String message) {
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text('Une erreur s\'est produite', style: TextStyle(color: Colors.red, fontWeight: FontWeight.w600),),
+        content: Text(message),
+
+        actions: <Widget>[
+          FlatButton(
+            child: Text('OK'),
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+          )
+        ],
+      )
+    );
+  }
+
+
+
+  Future<void> _submit() async {
+    if(!_form.currentState.validate()) {
+      //invalid
+      return;
+    }
+
+    _form.currentState.save();
+    setState(() {
+      _isLoading = true;
+    });
+
+    //connect / log
+    try{
+      await Provider.of<Auth>(context, listen: false).login(
+        _authData['email'],
+        _authData['password'],
+      );
+    } on HttpException catch(error) {
+       var errorMessage = 'Erreur réessayez';
+
+      if(error.toString().contains('INVALID_EMAIL')) {
+        errorMessage = 'Email invalide';
+      } else if(error.toString().contains('EMAIL_NOT_FOUND')) {
+        errorMessage = 'Utilisateur introuvable';
+      } else if(error.toString().contains('INVALID_PASSWORD')) {
+        errorMessage = 'Mot de passe incorrect';
+      } else if(error.toString().contains('USER_DISABLED')) {
+        errorMessage = 'Compte temporairement bloqué';
+      }
+
+      _showErrorDialog(errorMessage);
+
+    } catch(error) {
+      var errorMessage = 'Authentification impossible veillez réessayer';
+       _showErrorDialog(errorMessage);
+    }
+
+    setState(() {
+      _isLoading = false;
+    });
+
+    
+
+    if (Provider.of<Auth>(context, listen: false).isAuth ) {
+      Navigator.of(context).pushReplacement(
+        PageTransition(
+          type: PageTransitionType.fade, 
+          duration: Duration(seconds: 3),
+          child: Dashboard()
+        )
+      );
+      Fluttertoast.showToast(
+        msg: 'Connection reussi !',
+        toastLength: Toast.LENGTH_LONG, 
+        gravity: ToastGravity.BOTTOM,
+        backgroundColor: Colors.green,
+        textColor: Colors.white,
+        fontSize: 13.0
+      );
+    } 
+    // else {
+    //   Fluttertoast.showToast(
+    //     msg: 'Connection Echoue !',
+    //     toastLength: Toast.LENGTH_LONG, 
+    //     gravity: ToastGravity.BOTTOM,
+    //     backgroundColor: Colors.orange,
+    //     textColor: Colors.white,
+    //     fontSize: 13.0
+    //   );
+    // }
+
+  }
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -74,19 +229,19 @@ class _LoginState extends State<Login> {
             children: <Widget>[ 
             Container(
               height: MediaQuery.of(context).size.height / 2.2, 
-              // color: primaryColor,
               decoration: BoxDecoration(
+                color: primaryColor,
                 borderRadius: BorderRadius.only(
                   bottomLeft: Radius.circular(5),
                   bottomRight: Radius.circular(5),
                 ),
-                image: DecorationImage(
-                  fit: BoxFit.cover,
-                  image: AssetImage(
-                    'images/drawerimag.jpg',
+                // image: DecorationImage(
+                //   fit: BoxFit.cover,
+                //   image: AssetImage(
+                //     'images/drawerimag.jpg',
                     
-                  )
-                )
+                //   )
+                // )
               ),
             ),
             Padding(
@@ -116,47 +271,40 @@ class _LoginState extends State<Login> {
                   height: 10.0,
                 ),
 
-                Card(
-                  elevation: 12.0,
-                  child: Container(
-                    padding: EdgeInsets.all(25.0),
-                    child: Column(
-                      children: <Widget>[
-                        _buildPhoneTextField(),
-                        SizedBox(
-                          height: 20.0,
-                        ),
-                        _buildPasswordTextField(),
-                        SizedBox(height: 30.0,),
+                Form(
+                  key: _form,
 
-                        Container(
-                          child: OutlineButton(
-                            onPressed: (){},
-                            child: Text('Se connecter', textScaleFactor: 1.4, style: TextStyle(fontFamily: 'Poppins'),),
-                            textColor: primaryColor,
-                            borderSide: BorderSide(color: primaryColor),
-                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4))
+                  child: Card(
+                    elevation: 12.0,
+                    child: Container(
+                      padding: EdgeInsets.all(25.0),
+                      child: Column(
+                        children: <Widget>[
+                          _buildEmailTextField(),
+                          SizedBox(
+                            height: 20.0,
                           ),
-                        )
-                      ],
+                          _buildPasswordTextField(),
+                          SizedBox(height: 30.0,),
+
+                          Container(
+                            child: (_isLoading) 
+                            ? CircularProgressIndicator()
+                            : OutlineButton(
+                              onPressed: _submit,
+                              
+                              child: Text('Se connecter', textScaleFactor: 1.4, style: TextStyle(fontFamily: 'Poppins'),),
+                              textColor: primaryColor,
+                              borderSide: BorderSide(color: primaryColor),
+                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4))
+                            ),
+                          )
+                        ],
+                      ),
                     ),
                   ),
                 ),
 
-                //   height: 50.0,
-                //   decoration: BoxDecoration(
-                //       color: Colors.grey[900],
-                //       borderRadius: BorderRadius.circular(25.0)),
-                //   child: Center(
-                //     child: Text(
-                //       "Se Connecter",
-                //       style: TextStyle(
-                //         color: Colors.white,
-                //         fontSize: 18.0,
-                //         fontWeight: FontWeight.bold,
-                //       ),
-                //     ),
-                //   ),
                 
                 Divider(
                   height: 20.0,
@@ -173,8 +321,14 @@ class _LoginState extends State<Login> {
                     ),
                     SizedBox(width: 10.0),
                     GestureDetector(
-                      onTap: (){
-                        Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (BuildContext context) => SignUp()));
+                      onTap: () {
+                        Navigator.pushReplacement(
+                          context, PageTransition(
+                            type: PageTransitionType.rightToLeft, 
+                            duration: Duration(seconds: 1),
+                            child: SignUp()
+                          )
+                        );
                       },
                       child: Text(
                         "Inscrivez-vous",

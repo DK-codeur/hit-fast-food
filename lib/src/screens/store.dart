@@ -15,12 +15,20 @@ class Store extends StatefulWidget {
 
 class _StoreState extends State<Store> {
 
+  Future<void> _refreshProducts(BuildContext context) async {
+    await Provider.of<ProductsProvider>(context).fetchAndSetProduct();
+    await Provider.of<CategoriesProvider>(context).fetchAndSetCategory();
+  }
 
   @override
   void initState() {
     //Provider.of<ProductsProvider>(context).fetchAndSetProduct(); !!!!
     Future.delayed(Duration.zero).then((_) {
       Provider.of<ProductsProvider>(context).fetchAndSetProduct();
+    });
+
+    Future.delayed(Duration.zero).then((_) {
+      Provider.of<CategoriesProvider>(context).fetchAndSetCategory();
     });
     super.initState();
   }
@@ -30,37 +38,41 @@ class _StoreState extends State<Store> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: primaryColor,
-      body: Container(
-            decoration: BoxDecoration(
-              color: Colors.white,
-                borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(58),
-                  topRight: Radius.circular(58),
-                )
-            ),
-            // margin: EdgeInsets.only(top: 34),
-            child: Container(
-              margin: EdgeInsets.only(top: 50),
-              child: SingleChildScrollView(
-                
-                child: Column(
-                  children:<Widget>[
+      body: RefreshIndicator(
+        onRefresh: () => _refreshProducts(context),
 
-                      HeaderCategoriesTop(),
-                      
-                      Deals('Burger', () {}, 2),
-                      Deals('Chicken', () {}, 1),
-                      Deals('Tacos', () {}, 3),
-                      Deals('Grillades & Platter', () {}, 4),
-                      Deals('Sandwich & Hot Dog', () {}, 5),
-                      Deals('Salades', () {}, 6), 
-                      
-                  ],
+        child: Container(
+              decoration: BoxDecoration(
+                color: Colors.white,
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(58),
+                    topRight: Radius.circular(58),
+                  )
+              ),
+              // margin: EdgeInsets.only(top: 34),
+              child: Container(
+                margin: EdgeInsets.only(top: 50),
+                child: SingleChildScrollView(
+                  
+                  child: Column(
+                    children:<Widget>[
+
+                        HeaderCategoriesTop(),
+                        
+                        Deals('Burger', () {}, 2),
+                        Deals('Chicken', () {}, 1),
+                        Deals('Tacos', () {}, 3),
+                        Deals('Grillades & Platter', () {}, 4),
+                        Deals('Sandwich & Hot Dog', () {}, 5),
+                        Deals('Salades', () {}, 6), 
+                        
+                    ],
+                  ),
+                   
                 ),
-                 
               ),
             ),
-          ),
+      ),
      
     );
 

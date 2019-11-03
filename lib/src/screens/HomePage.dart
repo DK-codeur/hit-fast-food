@@ -1,12 +1,8 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:page_transition/page_transition.dart';
 import './Dashboard.dart';
-// import './SignUpPage.dart';
-// import './SignInPage.dart';
-// import '../shared/buttons.dart';
-// import '../shared/styles.dart';
-// import 'package:page_transition/page_transition.dart';
 
 
 class HomePage extends StatefulWidget {
@@ -22,12 +18,18 @@ class _HomePageState extends State<HomePage> {
 
   @override
   void initState() {
-    Timer(Duration(seconds: 7), () {
-      Navigator.of(context).pushReplacement(MaterialPageRoute(
-        builder: (context) => Dashboard()
-      ));
-
-    });
+    Timer(
+      Duration(seconds: 10), 
+      () {
+        Navigator.pushReplacement(
+          context, PageTransition(
+            type: PageTransitionType.fade, 
+            duration: Duration(seconds: 2),
+            child: Dashboard()
+          )
+        );
+      }
+    );
     super.initState();
   }
 
@@ -54,7 +56,7 @@ class _HomePageState extends State<HomePage> {
                 ),
               ),
               SizedBox(height: 30.0,),
-              Text('Chargement...', style: TextStyle(color: Colors.black)),
+              Text('Chargement...', style: TextStyle(color: Colors.black)),//311217
 
             //   Image.asset('images/welcome.png', width: 190, height: 190),
             //   Container(

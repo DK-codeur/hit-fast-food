@@ -5,7 +5,7 @@ import 'package:flutter/foundation.dart';
 class Product with ChangeNotifier {
   String idPdt;
   String title;
-  int price;
+  double price;
   int menuPrice;
   String image;
   String isMenu;

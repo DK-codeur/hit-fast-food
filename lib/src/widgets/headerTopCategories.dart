@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hit_fast_food/src/providers/datas_provider.dart';
+import 'package:page_transition/page_transition.dart';
 import 'package:provider/provider.dart';
 
 import '../providers/category.dart';
@@ -9,6 +10,10 @@ import '../shared/styles.dart';
 // import '../datas.dart';
 
 class HeaderCategoriesTop extends StatefulWidget {
+  // final String id;
+  // final String fakeId;
+
+  // HeaderCategoriesTop(this.id, this.fakeId);
   
   @override
   _HeaderCategoriesTopState createState() => _HeaderCategoriesTopState();
@@ -28,13 +33,8 @@ class _HeaderCategoriesTopState extends State<HeaderCategoriesTop> {
       Padding(
         padding: EdgeInsets.only(bottom: 14.0),
         child: Container(
-          // padding: EdgeInsets.only(top: 3.0, bottom: 3.0),
           decoration: BoxDecoration(
             color: Colors.white,
-            // borderRadius: BorderRadius.only(
-            //   topLeft: Radius.circular(30),
-            //   topRight: Radius.circular(30)
-            // )
 
           ),
           width: double.infinity,
@@ -97,19 +97,44 @@ class HeaderCategoryItem extends StatelessWidget {
               shape: CircleBorder(),
               heroTag: category.name,
 
+              // onPressed: () {
+              //   Navigator.of(context).pushNamed(
+              //   CategoryStoreScreen.routeName,
+              //   arguments: {
+              //     'catId': category.id,
+              //     'catFakeId': category.fakeId,
+              //   }
+              // );
+              // },
+
               onPressed: () {
-                Navigator.of(context).pushNamed(
-                CategoryStoreScreen.routeName,
-                arguments: category.id
+              Navigator.push(
+                context, PageTransition(
+                  type: PageTransitionType.rightToLeft, 
+                  duration: Duration(seconds: 1),
+                  child: CategoryStoreScreen(
+                    id: category.id,
+                    fakeId: category.fakeId,
+                  )
+                )
               );
-              },
+            },
+
               backgroundColor: white,
-              child: Image.asset(
-                'images/${category.image}',
+
+              child: FadeInImage.assetNetwork(
+                placeholder: 'images/load_img.png',
+                image: category.image,
                 fit: BoxFit.fill,
                 width: 60.0,
                 height: 60.0,
               ),
+              // child: Image.asset(
+              //   'images/${category.image}',
+              //   fit: BoxFit.fill,
+              //   width: 60.0,
+              //   height: 60.0,
+              // ),
             )),
         Text(category.name + ' ›', style: categoryText)
       ],
