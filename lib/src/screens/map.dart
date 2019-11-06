@@ -15,7 +15,7 @@ class Maps extends StatelessWidget {
           children: <Widget>[
             Text('Nous localiser', style: TextStyle(color: primaryColor)),
             // SizedBox(width: 24,),
-            Icon(Icons.location_on),
+            Icon(Icons.location_on, color: primaryColor),
           ],
         ),
         centerTitle: true,
