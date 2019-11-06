@@ -1,8 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:hit_fast_food/src/providers/auth.dart';
 import 'package:hit_fast_food/src/providers/cart_provider.dart';
 import 'package:hit_fast_food/src/providers/datas_provider.dart';
+import 'package:hit_fast_food/src/screens/map.dart';
 import 'package:hit_fast_food/src/screens/promo_screen.dart';
 import 'package:hit_fast_food/src/screens/store.dart';
 import 'package:hit_fast_food/src/shared/my_flutter_app_icons.dart';
@@ -42,6 +44,8 @@ class _DashboardState extends State<Dashboard> {
     // Future.delayed(Duration.zero).then((_) {
     //   Provider.of<ProductsProvider>(context).fetchAndSetProduct();
     // });
+
+    
     super.initState();
   }
 
@@ -52,6 +56,12 @@ class _DashboardState extends State<Dashboard> {
         _isLoading = true; 
       });
 
+      Provider.of<Auth>(context).fetchUserData().then((_) {
+        setState(() {
+          _isLoading = false; 
+        });
+      });
+      
       Provider.of<ProductsProvider>(context).fetchAndSetProduct().then((_) {
         setState(() {
           _isLoading = false; 
@@ -63,6 +73,7 @@ class _DashboardState extends State<Dashboard> {
           _isLoading = false; 
         });
       });
+
     }
 
     _isInit = false;
@@ -75,7 +86,7 @@ class _DashboardState extends State<Dashboard> {
     final _tabs = [
       PromoScreen(),
       Store(),
-      Center(child: Text('Ma monnaie')),
+      Maps(),
     ];
 
     return Scaffold(
@@ -105,22 +116,20 @@ class _DashboardState extends State<Dashboard> {
                 onPressed: () => Navigator.push( 
                   context,
                   PageTransition(
-                  type: PageTransitionType.rightToLeft, 
+                  type: PageTransitionType.rightToLeftWithFade, 
                   duration: Duration(seconds: 1),
                   child: CartScreen()
                 )
                 ),
               ),
 
-
-
             ) 
           ],
         ),
 
-        body:(_isLoading) 
-          ? Center(child: SpinKitChasingDots(color: Colors.red, size: 50,))
-          : _tabs[_selectedIndex],
+        body: (_isLoading)
+        ? SpinKitChasingDots(color: Colors.red, size: 50)
+        :_tabs[_selectedIndex],
         // FutureBuilder(
         //   future: Provider.of<ProductsProvider>(context).fetchAndSetProduct(),
         //   builder: (ctx, dataSnapshot) {
@@ -174,9 +183,9 @@ class _DashboardState extends State<Dashboard> {
 
             BottomNavigationBarItem(
                 
-                icon: Icon(Icons.payment),
+                icon: Icon(Icons.location_on),
                 title: Text(
-                  'Ma monnaie',
+                  'Resto',
                   style: tabLinkStyle,
                 )
             ),

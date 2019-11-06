@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:hit_fast_food/src/providers/auth.dart';
 import 'package:hit_fast_food/src/providers/orders.dart';
-import 'package:hit_fast_food/src/screens/Dashboard.dart';
+import 'package:hit_fast_food/src/screens/succes.sreen.dart';
 import 'package:hit_fast_food/src/shared/colors.dart';
 import 'package:provider/provider.dart';
 
@@ -24,6 +24,7 @@ class _CartScreenState extends State<CartScreen> {
   final nomController = TextEditingController();
   final adController = TextEditingController();
   final phoneController = TextEditingController();
+
 
   final _form = GlobalKey<FormState>();
    var _isLoading = false;  
@@ -144,9 +145,11 @@ class _CartScreenState extends State<CartScreen> {
 
         builder: (BuildContext context) {
           final cart = Provider.of<Cart>(context);
+          // final user = Provider.of<Auth>(context).userInfo;
+
           return new SimpleDialog(
             title: Text(
-              'Confirmez votre commande', 
+              'Information de livraison', 
               style: TextStyle(fontSize: 23,)
             ),
             contentPadding: EdgeInsets.all(12.0),
@@ -176,7 +179,7 @@ class _CartScreenState extends State<CartScreen> {
 
                       textInputAction: TextInputAction.next,
                       onFieldSubmitted: (_) {
-                        FocusScope.of(context).requestFocus(_lieulivraisonFocus);
+                        FocusScope.of(context).requestFocus(_telephoneFocus);
                       },
 
                       validator: (value) {
@@ -197,59 +200,17 @@ class _CartScreenState extends State<CartScreen> {
 
                       onChanged: (value) {
                         setState(() {
-                          _deliveryData['name'] = value;
+                           _deliveryData['name'] = value;
                         });
+
                       },
                       
                     ),
 
                     SizedBox(height: 25,),
+                    
 
-                     TextFormField(
-                      controller: adController,
-                      autovalidate: true,
-                      keyboardType: TextInputType.text,
-                      decoration: InputDecoration(
-                        hintText: "Lieu de livraison",
-                        icon: Icon(Icons.motorcycle),
-                        hintStyle: TextStyle(
-                          color: Color(0xFFBDC2CB),
-                          fontSize: 18.0,
-                        ),
-                      ),
-
-                      focusNode: _lieulivraisonFocus,
-                      textInputAction: TextInputAction.next,
-                      onFieldSubmitted: (_) {
-                        FocusScope.of(context).requestFocus(_telephoneFocus);
-                      },
-
-                      validator: (value) {
-                        if (value.isEmpty) {
-                          return 'Entrez un lieu';
-                        }
-
-                        if (value.length == 1) {
-                          return 'Nom du lieu trop court';
-                        }
-
-                        return null;
-                      },
-
-                      // onSaved: (value) {
-                      //   _deliveryData['adress'] = value;
-                      // },
-
-                      onChanged: (value) {
-                        setState(() {
-                          _deliveryData['adress'] = value;
-                        });
-                      },
-                    ),
-
-                    SizedBox(height: 25,),
-
-                     TextFormField(
+                    TextFormField(
                       controller: phoneController,
                       autovalidate: true,
                       keyboardType: TextInputType.phone,
@@ -263,7 +224,10 @@ class _CartScreenState extends State<CartScreen> {
                         ),
                       ),
                       
-                      textInputAction: TextInputAction.done,
+                      textInputAction: TextInputAction.next,
+                      onFieldSubmitted: (_) {
+                        FocusScope.of(context).requestFocus(_lieulivraisonFocus);
+                      },
                       focusNode: _telephoneFocus,
                       
                       validator: (value) {
@@ -290,6 +254,52 @@ class _CartScreenState extends State<CartScreen> {
                       
                     ),
 
+                    SizedBox(height: 25,),
+
+                     TextFormField(
+                      controller: adController,
+                      autovalidate: true,
+                      keyboardType: TextInputType.text,
+                      decoration: InputDecoration(
+                        hintText: "Lieu de livraison",
+                        icon: Icon(Icons.location_on),
+                        hintStyle: TextStyle(
+                          color: Color(0xFFBDC2CB),
+                          fontSize: 18.0,
+                        ),
+                      ),
+
+                      focusNode: _lieulivraisonFocus,
+                      textInputAction: TextInputAction.done,
+                      
+
+                      validator: (value) {
+                        if (value.isEmpty) {
+                          return 'Entrez un lieu pour la livraison';
+                        }
+
+                        if (value.length == 1) {
+                          return 'Nom du lieu trop court';
+                        }
+
+                        return null;
+                      },
+
+                      // onSaved: (value) {
+                      //   _deliveryData['adress'] = value;
+                      // },
+
+                      onChanged: (value) {
+                        setState(() {
+                          _deliveryData['adress'] = value;
+                        });
+                      },
+                    ),
+
+                    SizedBox(height: 25,),
+
+                     
+
                     Divider(), 
                     SizedBox(height: 20),
 
@@ -304,14 +314,14 @@ class _CartScreenState extends State<CartScreen> {
                           onPressed: ()=> Navigator.pop(context),
                         ),
 
-                      (nomController.value != null && adController.value != null && phoneController.value != null) 
+                      (nomController.text.isNotEmpty && adController.text.isNotEmpty && phoneController.text.isNotEmpty && (phoneController.text.length == 8)) 
                       ? OrderButton(
                           cart: cart,
                           userId: Provider.of<Auth>(context).userId,
-                          name: _deliveryData['name'],
+                          name:  _deliveryData['name'],
                           adress: _deliveryData['adress'],
                           phone: _deliveryData['phone'],
-                        )
+                      )
 
                       : RaisedButton(
                         child: Text('En cours...'),
@@ -361,18 +371,39 @@ class OrderButton extends StatefulWidget {
 class _OrderButtonState extends State<OrderButton> {
   var _isLoading = false;
 
+   void _showErrorDialog(String message) {
+    showDialog(
+      barrierDismissible: false,
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text('Ouups! Error', style: TextStyle(color: Colors.red, fontWeight: FontWeight.w600),),
+        content: Text(message),
+
+        actions: <Widget>[
+          FlatButton(
+            child: Text('OK'),
+            onPressed: () {
+              Navigator.of(context).pop();
+              Navigator.of(context).pop();
+            },
+          )
+        ],
+      )
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
       child: (_isLoading)
-      ?  CircularProgressIndicator() 
+      ?  SpinKitFadingCircle(color: Colors.red, size: 45)
       : RaisedButton(
          color: primaryColor,
 
         child:Text(
-            'Je confirme',
-            style: TextStyle(color: Colors.white)
-          ),
+          'Je confirme',
+          style: TextStyle(color: Colors.white)
+        ),
           
         onPressed: (widget.cart.totalAmount <= 0 || _isLoading) 
         ? null 
@@ -383,31 +414,49 @@ class _OrderButtonState extends State<OrderButton> {
           });
 
 
-          await Provider.of<Orders>(context, listen: false).addOrder(
-            widget.cart.items.values.toList(), 
-            widget.cart.totalAmount,
-            widget.userId,
-            widget.name,
-            widget.adress,
-            widget.phone,
-          );
+          try {
+            await Provider.of<Orders>(context, listen: false).addOrder(
+              widget.cart.items.values.toList(), 
+              widget.cart.totalAmount,
+              widget.userId,
+              widget.name,
+              widget.adress,
+              widget.phone,
+            );
 
-          setState(() {
-            _isLoading = false;
-          });
+            setState(() {
+              _isLoading = false;
+            });
 
-          widget.cart.clear();
+            widget.cart.clear();
 
-          Navigator.of(context).pushReplacementNamed(Dashboard.routeName);
+            Navigator.of(context).pop();
 
-          Fluttertoast.showToast(
-            msg: 'Commande passée avec succès !',
-            toastLength: Toast.LENGTH_LONG, 
-            gravity: ToastGravity.BOTTOM,
-            backgroundColor: primaryColor,
-            textColor: Colors.white,
-            fontSize: 14.0
-          );
+            Navigator.of(context).pushReplacement(
+              MaterialPageRoute(
+                builder: (context) => SuccesScreen()
+              )
+            );
+
+          } catch (error) {
+            var errorMsg = "Une erreur s\'est produite veillez reessayer ou verifier votre connexion !";
+
+            _showErrorDialog('$errorMsg'); 
+
+            
+            
+          }
+
+          // Fluttertoast.showToast(
+          //   msg: 'Testtest Test',
+          //   toastLength: Toast.LENGTH_LONG, 
+          //   gravity: ToastGravity.BOTTOM,
+          //   backgroundColor: primaryColor,
+          //   textColor: Colors.white,
+          //   fontSize: 14.0
+          // );
+
+         
         },
       ),
     );

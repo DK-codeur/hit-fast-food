@@ -1,18 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:hit_fast_food/src/providers/auth.dart';
-import 'package:hit_fast_food/src/providers/orders.dart';
-import 'package:hit_fast_food/src/screens/map.dart';
-import 'package:hit_fast_food/src/screens/profile_screen.dart';
-import 'package:hit_fast_food/src/screens/promo_screen.dart';
-import 'package:hit_fast_food/src/screens/store.dart';
 import 'package:provider/provider.dart';
 
+import './src/providers/auth.dart';
+import './src/providers/orders.dart';
+import './src/screens/map.dart';
+import './src/screens/profile_screen.dart';
+import './src/screens/promo_screen.dart';
+import './src/screens/store.dart';
+import './src/screens/succes.sreen.dart';
 import './src/providers/cart_provider.dart';
 import './src/providers/datas_provider.dart';
 import './src/screens/cart_screen.dart';
-import './src/screens/category_store_screen.dart';
 import './src/screens/login.dart';
 import './src/screens/signup.dart';
 import './src/screens/HomePage.dart';
@@ -36,28 +36,45 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
+
         ChangeNotifierProvider.value(
           value: Auth(),
         ),
+
+      //  ChangeNotifierProxyProvider<Auth, ProductsProvider>(
+      //     builder: (ctx, auth, prevProds) => ProductsProvider(
+      //       auth.token, 
+      //       prevProds == null ? [] : prevProds.foods
+      //     ),
+      //   ),
         ChangeNotifierProvider.value(
           value: ProductsProvider(),
         ),
+
+        // ChangeNotifierProxyProvider<Auth, CategoriesProvider>(
+        //   builder: (ctx, auth, prevCats) => CategoriesProvider(
+        //     auth.token, 
+        //     prevCats == null ? [] : prevCats.categorie
+        //   ),
+        // ),
+        ChangeNotifierProvider.value(
+          value: CategoriesProvider(),
+        ),
+
+        // ChangeNotifierProxyProvider<Auth, Orders>(
+        //   builder: (ctx, auth, ord) => Orders(
+        //     auth.token
+        //   ),
+        // ),
+        ChangeNotifierProvider.value(
+          value: Orders(),
+        ),
+
 
         ChangeNotifierProvider.value(
           value: Cart(),
         ),
 
-        ChangeNotifierProvider.value(
-          value: CategoriesProvider(),
-        ),
-
-        ChangeNotifierProvider.value(
-          value: CategoriesProvider(),
-        ),
-
-        ChangeNotifierProvider.value(
-          value: Orders(),
-        )
       ],
 
         child: Consumer<Auth>(
@@ -88,6 +105,7 @@ class MyApp extends StatelessWidget {
             Maps.routeName: (BuildContext context) => Maps(),
             ProfileScreen.routeName: (BuildContext context) => ProfileScreen(),
             PromoScreen.routeName: (BuildContext context) => PromoScreen(),
+            SuccesScreen.routeName: (BuildContext context) => SuccesScreen(),
             
           },
       ),

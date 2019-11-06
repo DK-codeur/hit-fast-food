@@ -40,7 +40,7 @@ class CategoryStoreItem extends StatelessWidget {
               Navigator.push(
                 context, 
                 PageTransition(
-                  type: PageTransitionType.rightToLeft, 
+                  type: PageTransitionType.rightToLeftWithFade, 
                   duration: Duration(seconds: 1),
                   child: ProductPage(
                     routeArgAsid: reqCatItem.idPdt,

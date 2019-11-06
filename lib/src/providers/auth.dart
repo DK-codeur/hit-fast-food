@@ -1,10 +1,10 @@
+import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'dart:async';
 
-import 'package:flutter/material.dart';
-import 'package:hit_fast_food/models/http_exception.dart';
-import 'package:http/http.dart' as http;
-import 'package:shared_preferences/shared_preferences.dart';
+import '../../models/http_exception.dart';
 
 
 class Auth with ChangeNotifier {
@@ -13,13 +13,25 @@ class Auth with ChangeNotifier {
   String _userId;
   Timer _authTimer;
 
+ Map<String, dynamic> userInfo = {
+   'username': '',
+   'email': '',
+   'phone': ''
+ };
 
   bool get isAuth{
     return _token != null;
   }
 
-  String get token {
-    if (_expiryDate != null && _expiryDate.isAfter(DateTime.now().add(Duration(days: 365))) && _token != null) {
+  // String get token { //_expiryDate.isAfter(DateTime.now())
+  //   if (_expiryDate != null && _token != null) {
+  //     return _token;
+  //   }
+  //   return null;
+  // }
+
+   String get token {
+    if (_expiryDate != null && _expiryDate.isAfter(DateTime.now()) && _token != null) {
       return _token;
     }
     return null;
@@ -51,11 +63,9 @@ class Auth with ChangeNotifier {
 
       _token = responseData['idToken'];
       _userId = responseData['localId'];
-      _expiryDate = DateTime.now().add(
-        Duration(seconds: int.parse(responseData['expiresIn']))
-      );
+      _expiryDate =DateTime.now().add(Duration(seconds: int.parse(responseData['expiresIn'],),),); //DateTime.now().add(Duration(days: 365));
 
-      // _autoLogOut();
+      _autoLogOut();
       notifyListeners();
 
       final prefs = await SharedPreferences.getInstance();
@@ -76,10 +86,10 @@ class Auth with ChangeNotifier {
   Future<void> signUp(String email, String password,    String id, String emailU, String username, String phone) async {
      await _authenticate(email, password, 'signUp');
 
-     final urlU = 'https://hit78f-food3b.firebaseio.com/users.json';
+     final urlU = 'https://hit78f-food3b.firebaseio.com/users.json?auth=$token';
 
      if(userId != null) {
-        final response = await http.post(
+        await http.post(
         urlU,
         body: json.encode({
           'id': userId,
@@ -89,7 +99,7 @@ class Auth with ChangeNotifier {
         })
       );
 
-      print(response.body);
+      // print(response.body);
     } 
 
   } 
@@ -102,37 +112,44 @@ class Auth with ChangeNotifier {
   
 
 
-  // Future<void> fetchUserData([bool byUser = true]) async {
-  //   final byUserString  = byUser ? 'orderBy="id"&equalTo="$userId"' : '';
-  //   final urlU = 'https://hit78f-food3b.firebaseio.com/users.json?auth=$token&$byUserString';
+  Future<void> fetchUserData() async {
+    final byUserString  = 'orderBy="id"&equalTo="$userId"' ;
+    final urlU = 'https://hit78f-food3b.firebaseio.com/users.json?auth=$token&$byUserString';
 
-  //   final response = await http.get(urlU);
-  //   final extractedData = json.decode(response.body) as Map<String, dynamic>;
-  //   print(extractedData);
+    try{
+      final response = await http.get(urlU);
+      final extractedData = json.decode(response.body) as Map<String, dynamic>;
+      print(extractedData);
 
-  //   if(extractedData == null) {
-  //     return;
-  //   }
+      if(extractedData == null) {
+        return;
+      }
+  
+
+    final Map<String, dynamic> user = {};
+    extractedData.forEach((userExtId, userdata) {
+      user.addAll(userdata);
+    });
+
+    if(user['id'] != null) {
+      userInfo['username'] = user['username'];
+      userInfo['email'] = user['email'];
+      userInfo['phone'] = user['phone'];
+
+    notifyListeners();
+    }
+
+    // print(user['id']);
     
 
-  //   final Profile user = Profile(
-  //     name: extractedData['name'],
-  //     email: extractedData['email'],
-  //     phone: extractedData['phone'],
-  //     money: extractedData['money'],
-  //   );
-
-  //   print(user.name);
-
-
-  // }
+   } catch (error) {
+     throw error;
+   }
+    
+  }
 
 
   
-
-  
-
-
   Future<bool> tryAutoLogin() async {
     final prefs = await SharedPreferences.getInstance();
 
@@ -151,7 +168,7 @@ class Auth with ChangeNotifier {
     _userId = extractedUserData['userId'];
     _expiryDate = expiryDate; //ed
     notifyListeners();
-
+    _autoLogOut();
     return true;
   } 
 

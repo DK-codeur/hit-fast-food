@@ -21,61 +21,9 @@ class OrderItem {
 
 
 class Orders with ChangeNotifier {
-  List<OrderItem> _orders = [];
-  final String authToken;
-  final String userId;
+  // final String authToken;
 
-  Orders({this.authToken, this.userId});
-
-  List<OrderItem> get orders {
-    return [..._orders];
-  }
-
-
-  // void addOrder(List<CartItem> cartProducts, double total) {
-  //   _orders.insert(
-  //     0,
-  //     OrderItem(
-  //       id: DateTime.now().toString(),
-  //       amount: total,
-  //       dateTime: DateTime.now(),
-  //       products: cartProducts,
-  //     ),
-  //   );
-  //   notifyListeners();
-  // }
-
-  // Future<void> fetchAndSetOrders() async {
-  //   const url = '';
-  //   final response = await http.get(url);
-  //   final List<OrderItem> loadedOrders = [];
-  //   final extractedData = json.decode(response.body) as Map<String, dynamic>;
-
-  //   if(extractedData == null) {
-  //     return;
-  //   }
-
-  //   extractedData.forEach((orderId, orderData) {
-  //     loadedOrders.add(
-  //       OrderItem(
-  //         id: orderId,
-  //         amount: orderData['amount'],
-  //         dateTime: DateTime.parse(orderData['dateTime']),
-  //         products: (orderData['products'] as List<dynamic>).map((item) => CartItem(
-  //           id: item['id'],
-  //           price: item['price'],
-  //           quantity: item['quantity'],
-  //           title: item['title'],
-  //           image: item['image']
-  //         )).toList()
-  //       )
-  //     );
-  //   });
-
-  //   _orders = loadedOrders.reversed.toList();
-  //   notifyListeners();
-
-  // }
+  // Orders(this.authToken);
 
   Future<void> addOrder(List<CartItem> cartProducts, double total, String idU, String name, String adress, String phone) async {
     final url = 'https://hit78f-food3b.firebaseio.com/orders.json';
@@ -101,17 +49,6 @@ class Orders with ChangeNotifier {
       })
     );
 
-    // _orders.insert(
-    //   0, 
-    //   OrderItem(
-    //     id: json.decode(response.body)['name'],
-    //     amount: total,      
-    //     dateTime: timeStamp,
-    //     products: cartProducts,
-    //   )
-    // );
-
-    // notifyListeners();
   }
 
 }

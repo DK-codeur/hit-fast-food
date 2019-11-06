@@ -1,15 +1,46 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:hit_fast_food/src/providers/auth.dart';
 import 'package:hit_fast_food/src/shared/colors.dart';
+import 'package:provider/provider.dart';
 
-class ProfileScreen extends StatelessWidget {
+class ProfileScreen extends StatefulWidget {
   static const routeName = '/profile';
 
   @override
+  _ProfileScreenState createState() => _ProfileScreenState();
+}
+
+class _ProfileScreenState extends State<ProfileScreen> {
+  var _isLoading = false;
+  var _isInit = true;
+
+  void didChangeDependencies() {
+    if (_isInit) {
+      setState(() {
+        _isLoading = true; 
+      });
+
+      Provider.of<Auth>(context).fetchUserData().then((_) {
+        setState(() {
+          _isLoading = false; 
+        });
+      });
+    }
+
+    _isInit = false;
+    super.didChangeDependencies();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    
+    final user = Provider.of<Auth>(context).userInfo;
+
     return Scaffold(
       backgroundColor: Colors.blueGrey[50],
-      body: SingleChildScrollView(
+      body: (_isLoading)
+      ? Center(child: SpinKitChasingDots(color: Colors.red, size: 50,))
+      : SingleChildScrollView(
         child: Column(
           children: <Widget>[
             Container( //space btw 2 widget    
@@ -27,14 +58,7 @@ class ProfileScreen extends StatelessWidget {
                         bottomLeft: Radius.circular(24),
                         bottomRight: Radius.circular(24),
                       ),
-                      color: Colors.indigo,
-
-                      image: DecorationImage(
-                        fit: BoxFit.cover,
-                        image: AssetImage(
-                          'images/drawerimag.jpg'
-                        )
-                      )
+                      color: primaryColor
                     ),
                     
                   ),
@@ -53,10 +77,10 @@ class ProfileScreen extends StatelessWidget {
                         IconButton(
                           icon: Icon(Icons.arrow_back_ios, color: Colors.white,),
                           onPressed: () {
-                            // Navigator.of(context).pushNamed(MainPage.routeName);
+                            Navigator.of(context).pop();
                           },
                         ),
-                        // SizedBox(width: 90,),
+                        
 
                         Text(
                           'Profile',
@@ -112,7 +136,7 @@ class ProfileScreen extends StatelessWidget {
                           SizedBox(height: 12),
 
                           Text(
-                            'Jean florentin',
+                            user['username'],
                             style: TextStyle(
                               fontSize: 22,
                               fontWeight: FontWeight.bold,
@@ -176,7 +200,7 @@ class ProfileScreen extends StatelessWidget {
                       Row(
                         children: <Widget>[
                           Text(
-                            'jeanfanc@gmail.com', 
+                            user['email'], 
                             style: TextStyle(
                               fontWeight: FontWeight.bold,
                               fontSize: 18,
@@ -210,7 +234,7 @@ class ProfileScreen extends StatelessWidget {
                       Row(
                         children: <Widget>[
                           Text(
-                            '09887799',
+                            user['phone'],
                             style: TextStyle(
                               fontWeight: FontWeight.bold,
                               fontSize: 18,
@@ -243,16 +267,35 @@ class ProfileScreen extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget> [ 
-              InkWell(
-                onTap: () {},
-                  child: Container(
-                  margin: EdgeInsets.only(left: 4, right: 4),
-                  height: 50,
-                  width: MediaQuery.of(context).size.width * 0.9,
-                  decoration: BoxDecoration(
-                    color: primaryColor,
-                    borderRadius: BorderRadius.circular(24),
-                  ),
+              (_isLoading) 
+              ? SpinKitFadingCircle(color: Colors.red, size: 45,)
+              : Container(
+                margin: EdgeInsets.only(left: 4, right: 4),
+                height: 50,
+                width: MediaQuery.of(context).size.width * 0.9,
+                decoration: BoxDecoration(
+                  color: primaryColor,
+                  borderRadius: BorderRadius.circular(24),
+                ),
+
+                child: InkWell(
+                  onTap: () async{
+                    setState(() {
+                      _isLoading = true;
+                    });
+
+                    try{
+                      Navigator.of(context).pop();
+                      Navigator.of(context).pushReplacementNamed('/');
+                      Provider.of<Auth>(context, listen: false).logout();
+                    } catch (error) {
+                      throw error;
+                    }
+                    
+                     setState(() {
+                      _isLoading = false;
+                    });
+                  },
 
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -261,7 +304,7 @@ class ProfileScreen extends StatelessWidget {
                       Text(
                           'Deconnexion',
                           style: TextStyle(color: Colors.white, fontWeight: FontWeight.w700, fontSize: 17),
-                        ),
+                      ),
                     ],
                   ),
                   

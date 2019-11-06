@@ -4,6 +4,7 @@ import 'package:hit_fast_food/src/screens/login.dart';
 import 'package:hit_fast_food/src/screens/map.dart';
 import 'package:hit_fast_food/src/screens/profile_screen.dart';
 import 'package:hit_fast_food/src/shared/colors.dart';
+import 'package:page_transition/page_transition.dart';
 import 'package:provider/provider.dart';
 
 
@@ -19,6 +20,7 @@ class MainDrawer extends StatelessWidget {
           fontFamily: 'CenturyGhotic',
           fontSize: 18,
           fontWeight: FontWeight.w600,
+          color: Colors.grey[600]
         ),
       ),
       onTap: () {
@@ -27,6 +29,13 @@ class MainDrawer extends StatelessWidget {
       },
     );
   }
+
+
+  String capitalize(String s) {
+    return  s.toUpperCase();
+  }
+
+  
 
   @override
   Widget build(BuildContext context) {
@@ -102,20 +111,44 @@ class MainDrawer extends StatelessWidget {
               // DrawerCategorie(),
               menuList(
                  (Provider.of<Auth>(context, listen: false).isAuth ) 
-                 ? (Provider.of<Auth>(context, listen: false).userId)
+                 ? capitalize(Provider.of<Auth>(context).userInfo['username'])
                  :  'Compte', 
 
                  Icons.account_circle, 
 
                  (Provider.of<Auth>(context, listen: false).isAuth )
-                 ? ()=> Navigator.of(context).pushNamed(ProfileScreen.routeName)
+                 ? () async {
+                   Navigator.of(context).pop();
+                   await Navigator.of(context).push(
+                     
+                     PageTransition(
+                       type: PageTransitionType.rightToLeftWithFade,
+                       duration: Duration(milliseconds: 600),
+                       child: ProfileScreen()
+                     )
+                    );
+                  }
                  : ()=> Navigator.of(context).pushNamed(Login.routeName)
               ),
 
+              
+
               Divider(),
-              menuList('Ma monnaie', Icons.payment,() => Navigator.of(context).pushNamed(Login.routeName)),
-              menuList('Promos', Icons.card_giftcard,() => Navigator.of(context).pushNamed("")),
-              menuList('Nos restaurants', Icons.location_on,() => Navigator.of(context).pushNamed(Maps.routeName)),
+              // menuList('Ma monnaie', Icons.payment,() => Navigator.of(context).pushNamed(Login.routeName)),
+              // menuList('Promos', Icons.card_giftcard,() => Navigator.of(context).pushNamed("")),
+              menuList(
+                'Nos restaurants', 
+                Icons.location_on,
+                () {
+                  Navigator.of(context).push(
+                    PageTransition(
+                       type: PageTransitionType.rightToLeftWithFade,
+                       duration: Duration(milliseconds: 600),
+                       child: Maps()
+                     )
+                  );
+              
+                }),
 
             ],
           ),

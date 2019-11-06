@@ -47,8 +47,8 @@ class FoodItem extends StatelessWidget {
               Navigator.push(
                 context, 
                 PageTransition(
-                  type: PageTransitionType.rightToLeft, 
-                  duration: Duration(seconds: 1),
+                  type: PageTransitionType.rightToLeftWithFade, 
+                  duration: Duration(milliseconds: 900),
                   child: ProductPage(
                     routeArgAsid: product.idPdt,
                   )

@@ -9,18 +9,20 @@ import './category.dart';
 //Category Provider
 
  class ProductsProvider with ChangeNotifier {
-    List<Product> _foods = [
+  List<Product> _foods = [];
+  // final String authToken;
 
-    //burger
-  ];
+  // ProductsProvider(this.authToken, this._foods);
 
   List<Product> get foods {
     return [..._foods];
   }
 
 
+
+
   Future<void> fetchAndSetProduct() async { 
-    const url = 'https://hit78f-food3b.firebaseio.com/products.json';
+    final url = 'https://hit78f-food3b.firebaseio.com/products.json';
     
     try{
       final response = await  http.get(url);
@@ -73,10 +75,10 @@ import './category.dart';
     return _foods.firstWhere( (prod) => prod.idPdt == id);
   }
 
-  void addProduct() {
-    // _food.add(value);
-    notifyListeners();
-  }
+  // void addProduct() {
+  //   // _food.add(value);
+  //   notifyListeners();
+  // }
 
 }
 
@@ -86,19 +88,21 @@ import './category.dart';
 
  class CategoriesProvider with ChangeNotifier {
 
-  List<Category> _categorie = [
+  List<Category> _categorie = [];
+  // final String authToken;
 
-  ];
-
+  // CategoriesProvider(this.authToken, this._categorie);
 
  List<Category> get categorie {
     
   return [..._categorie];
  }
 
+
+
   
   Future<void> fetchAndSetCategory() async {
-    const url = 'https://hit78f-food3b.firebaseio.com/categories.json';
+    final url = 'https://hit78f-food3b.firebaseio.com/categories.json';
 
     try{
       final response = await http.get(url);

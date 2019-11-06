@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:hit_fast_food/src/providers/auth.dart';
 import 'package:hit_fast_food/src/shared/colors.dart';
@@ -171,18 +172,16 @@ class _LoginState extends State<Login> {
       _isLoading = false;
     });
 
-    
-
     if (Provider.of<Auth>(context, listen: false).isAuth ) {
       Navigator.of(context).pushReplacement(
         PageTransition(
           type: PageTransitionType.fade, 
-          duration: Duration(seconds: 3),
+          duration: Duration(seconds: 2),
           child: Dashboard()
         )
       );
       Fluttertoast.showToast(
-        msg: 'Connection reussi !',
+        msg: 'Connection reussie !',
         toastLength: Toast.LENGTH_LONG, 
         gravity: ToastGravity.BOTTOM,
         backgroundColor: Colors.green,
@@ -190,16 +189,6 @@ class _LoginState extends State<Login> {
         fontSize: 13.0
       );
     } 
-    // else {
-    //   Fluttertoast.showToast(
-    //     msg: 'Connection Echoue !',
-    //     toastLength: Toast.LENGTH_LONG, 
-    //     gravity: ToastGravity.BOTTOM,
-    //     backgroundColor: Colors.orange,
-    //     textColor: Colors.white,
-    //     fontSize: 13.0
-    //   );
-    // }
 
   }
 
@@ -289,7 +278,7 @@ class _LoginState extends State<Login> {
 
                           Container(
                             child: (_isLoading) 
-                            ? CircularProgressIndicator()
+                            ? SpinKitFadingCircle(color: Colors.red, size: 45,)
                             : OutlineButton(
                               onPressed: _submit,
                               

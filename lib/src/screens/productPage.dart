@@ -1,3 +1,5 @@
+import 'package:animated_widgets/animated_widgets.dart';
+import 'package:animated_widgets/widgets/shake_animated_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:hit_fast_food/src/providers/datas_provider.dart';
 import 'package:page_transition/page_transition.dart';
@@ -28,6 +30,8 @@ class _ProductPageState extends State<ProductPage> {
   // double _rating = 4;
   int _quantity = 1;
   int menuSelected = 0;
+  bool _anim = false;
+
   @override
   Widget build(BuildContext context) {
 
@@ -57,18 +61,37 @@ class _ProductPageState extends State<ProductPage> {
                 child: ch,
               ),
 
-              child: IconButton(
-                icon: Icon(MyFlutterApp.shopping_bag, color: primaryColor,),
-                iconSize: 27,
-                onPressed: () {
-                  Navigator.of(context).push(
-                    PageTransition(
-                      type: PageTransitionType.rightToLeft, 
-                      duration: Duration(seconds: 1),
-                      child: CartScreen()
-                    )
-                  );
-                },
+
+
+              // ShakeAnimatedWidget(
+              //   enabled: this._enabled,
+              //   duration: Duration(milliseconds: 1500),
+              //   shakeAngle: Rotation.deg(z: 40),
+              //   curve: Curves.linear,
+              //   child: FlutterLogo(
+              //     style: FlutterLogoStyle.stacked,
+              //   ),
+              // ),
+
+              child: ShakeAnimatedWidget(
+                enabled: _anim,
+                duration: Duration(milliseconds: 500),
+                shakeAngle: Rotation.deg(z: 40),
+                curve: Curves.linear,
+
+                child: IconButton(
+                  icon: Icon(MyFlutterApp.shopping_bag, color: primaryColor,),
+                  iconSize: 27,
+                  onPressed: () {
+                    Navigator.of(context).push(
+                      PageTransition(
+                        type: PageTransitionType.rightToLeftWithFade, 
+                        duration: Duration(seconds: 1),
+                        child: CartScreen()
+                      )
+                    );
+                  },
+                ),
               ),
             )
           ],
@@ -208,47 +231,47 @@ class _ProductPageState extends State<ProductPage> {
                             ),
                           ),
 
-                          Container(
-                            width: 180,
-                            child: froyoOutlineBtn(
-                              'Acheter', 
-                              (reqPdt.menuPrice != 0 && menuSelected < 0) 
-                              ? () => Fluttertoast.showToast(
-                                  msg: 'Veuillez choisir un plat !',
-                                  toastLength: Toast.LENGTH_LONG, 
-                                  gravity: ToastGravity.CENTER,
-                                  backgroundColor: Colors.red,
-                                  textColor: Colors.white,
-                                  fontSize: 13.0
-                              )
+                          // Container(
+                          //   width: 180,
+                          //   child: froyoOutlineBtn(
+                          //     'Acheter', 
+                          //     (reqPdt.menuPrice != 0 && menuSelected < 0) 
+                          //     ? () => Fluttertoast.showToast(
+                          //         msg: 'Veuillez choisir un plat !',
+                          //         toastLength: Toast.LENGTH_LONG, 
+                          //         gravity: ToastGravity.CENTER,
+                          //         backgroundColor: Colors.red,
+                          //         textColor: Colors.white,
+                          //         fontSize: 13.0
+                          //     )
                               
-                            : () {
-                              cart.addItem(
-                                reqPdt.idPdt, 
-                               (reqPdt.menuPrice != 0 && (menuSelected == 1)) ? reqPdt.menuPrice.toDouble()  : reqPdt.price,
-                                reqPdt.title, 
-                                _quantity,
-                                reqPdt.image, 
-                                (reqPdt.menuPrice != 0 && (menuSelected == 1)) ? reqPdt.isMenu : '',
-                              );
+                          //   : () {
+                          //     cart.addItem(
+                          //       reqPdt.idPdt, 
+                          //      (reqPdt.menuPrice != 0 && (menuSelected == 1)) ? reqPdt.menuPrice.toDouble()  : reqPdt.price,
+                          //       reqPdt.title, 
+                          //       _quantity,
+                          //       reqPdt.image, 
+                          //       (reqPdt.menuPrice != 0 && (menuSelected == 1)) ? reqPdt.isMenu : '',
+                          //     );
 
-                              Navigator.of(context).push(
-                                PageTransition(
-                                type: PageTransitionType.rightToLeft, 
-                                duration: Duration(seconds: 1),
-                                child: CartScreen()
-                              ),);
+                          //     Navigator.of(context).push(
+                          //       PageTransition(
+                          //       type: PageTransitionType.rightToLeftWithFade, 
+                          //       duration: Duration(seconds: 1),
+                          //       child: CartScreen()
+                          //     ),);
 
-                               Fluttertoast.showToast(
-                                msg: 'Veuillez valider votre panier',
-                                toastLength: Toast.LENGTH_LONG, 
-                                gravity: ToastGravity.BOTTOM,
-                                backgroundColor: primaryColor,
-                                textColor: Colors.white,
-                                fontSize: 14.0
-                              );
-                            }),
-                          ),
+                          //      Fluttertoast.showToast(
+                          //       msg: 'Veuillez valider votre panier',
+                          //       toastLength: Toast.LENGTH_LONG, 
+                          //       gravity: ToastGravity.BOTTOM,
+                          //       backgroundColor: primaryColor,
+                          //       textColor: Colors.white,
+                          //       fontSize: 14.0
+                          //     );
+                          //   }),
+                          // ),
 
                           Container(
                             width: 180,
@@ -274,7 +297,11 @@ class _ProductPageState extends State<ProductPage> {
                                 (reqPdt.menuPrice != 0 && (menuSelected == 1)) ? reqPdt.isMenu : '',
                               );
 
-                              Navigator.pop(context);
+                              // Navigator.pop(context);
+
+                              setState(() {
+                                _anim = true;
+                              });
 
                               Fluttertoast.showToast(
                                 msg: 'Ajouter avec succès au panier',

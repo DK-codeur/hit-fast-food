@@ -49,9 +49,8 @@ class _DealsState extends State<Deals> {
                 //...id, title 
               )
             ),
-            
           )
-          : Center(child: Text('pas de produit disponible')),
+          : Center(child: Text('chargement...')),
         ),
 
         Container(margin: EdgeInsets.only(bottom: 20),)

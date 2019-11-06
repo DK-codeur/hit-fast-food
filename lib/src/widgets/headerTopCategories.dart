@@ -30,26 +30,25 @@ class _HeaderCategoriesTopState extends State<HeaderCategoriesTop> {
     mainAxisAlignment: MainAxisAlignment.center,
     crossAxisAlignment: CrossAxisAlignment.center,
     children: <Widget>[
-      Padding(
-        padding: EdgeInsets.only(bottom: 14.0),
-        child: Container(
-          decoration: BoxDecoration(
-            color: Colors.white,
-
-          ),
-          width: double.infinity,
-          child: Text(
-            'Nos spécialités',
-            textAlign: TextAlign.center,
-            style: TextStyle(
-              color: primaryColor,
-              fontSize: 20,
-              fontWeight: FontWeight.w700,
-              fontFamily: 'CenturyGothic'
+       Container(
+          padding: EdgeInsets.symmetric(vertical: 5),
+          margin: EdgeInsets.only(bottom: 5),
+            height: 40,
+            decoration: BoxDecoration(
+              color: Colors.white,
+            ),
+            width: double.infinity,
+            child: Text(
+              'Nos spécialités',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                color: primaryColor,
+                fontSize: 20,
+                fontWeight: FontWeight.w700,
+                fontFamily: 'CenturyGothic'
+              ),
             ),
           ),
-        ),
-      ),
     
       SizedBox(
         height: 100,
@@ -110,7 +109,7 @@ class HeaderCategoryItem extends StatelessWidget {
               onPressed: () {
               Navigator.push(
                 context, PageTransition(
-                  type: PageTransitionType.rightToLeft, 
+                  type: PageTransitionType.rightToLeftWithFade, 
                   duration: Duration(seconds: 1),
                   child: CategoryStoreScreen(
                     id: category.id,
@@ -129,12 +128,7 @@ class HeaderCategoryItem extends StatelessWidget {
                 width: 60.0,
                 height: 60.0,
               ),
-              // child: Image.asset(
-              //   'images/${category.image}',
-              //   fit: BoxFit.fill,
-              //   width: 60.0,
-              //   height: 60.0,
-              // ),
+              
             )),
         Text(category.name + ' ›', style: categoryText)
       ],

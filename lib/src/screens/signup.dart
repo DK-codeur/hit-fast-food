@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:hit_fast_food/models/http_exception.dart';
 import 'package:hit_fast_food/src/providers/auth.dart';
@@ -242,7 +243,7 @@ class _SignUpState extends State<SignUp> {
 
       validator: (value) {
         if (value != _passwordController.text) {
-          return 'Les mot de pass ne concordent pas';
+          return 'Les mots de passes ne concordent pas';
         }
 
         return null;
@@ -284,6 +285,8 @@ class _SignUpState extends State<SignUp> {
         _authData['username'],
         _authData['phone'],
       );
+
+
     } on HttpException catch(error) {
       var erroMessage = 'Erreur réesayez';
 
@@ -306,32 +309,25 @@ class _SignUpState extends State<SignUp> {
       _isLoading = false;
     });
 
-    Navigator.of(context).pushReplacement(
-      PageTransition(
-        type: PageTransitionType.fade, 
-        duration: Duration(seconds: 3),
-        child: Dashboard()
-      )
-    );
+    if (Provider.of<Auth>(context, listen: false).isAuth ) {
+      Navigator.of(context).pushReplacement(
+        PageTransition(
+          type: PageTransitionType.fade, 
+          duration: Duration(seconds: 3),
+          child: Dashboard()
+        )
+      );
 
-    (Provider.of<Auth>(context, listen: false).isAuth ) 
-    ? Fluttertoast.showToast(
-      msg: 'Connection reussi !',
-      toastLength: Toast.LENGTH_LONG, 
-      gravity: ToastGravity.BOTTOM,
-      backgroundColor: Colors.green,
-      textColor: Colors.white,
-      fontSize: 13.0
-    )
+      Fluttertoast.showToast(
+        msg: 'Connection reussi !',
+        toastLength: Toast.LENGTH_LONG, 
+        gravity: ToastGravity.BOTTOM,
+        backgroundColor: Colors.green,
+        textColor: Colors.white,
+        fontSize: 13.0
+      );
 
-    : Fluttertoast.showToast(
-      msg: 'Connection Echoue !',
-      toastLength: Toast.LENGTH_LONG, 
-      gravity: ToastGravity.BOTTOM,
-      backgroundColor: Colors.orange,
-      textColor: Colors.white,
-      fontSize: 13.0
-    );
+    }
 
   }
 
@@ -419,7 +415,7 @@ class _SignUpState extends State<SignUp> {
                 Container(
                   
                   child: (_isLoading) 
-                ?   CircularProgressIndicator() 
+                ?   SpinKitFadingCircle(color: Colors.red, size: 45) 
                 :   OutlineButton(
                     onPressed: _submit,
 
