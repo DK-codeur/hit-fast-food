@@ -86,7 +86,7 @@ class Auth with ChangeNotifier {
   Future<void> signUp(String email, String password,    String id, String emailU, String username, String phone) async {
      await _authenticate(email, password, 'signUp');
 
-     final urlU = 'https://hit78f-food3b.firebaseio.com/users.json?auth=$token';
+     final urlU = 'https://hit78f-food3b.firebaseio.com/users.json';
 
      if(userId != null) {
         await http.post(
@@ -114,7 +114,7 @@ class Auth with ChangeNotifier {
 
   Future<void> fetchUserData() async {
     final byUserString  = 'orderBy="id"&equalTo="$userId"' ;
-    final urlU = 'https://hit78f-food3b.firebaseio.com/users.json?auth=$token&$byUserString';
+    final urlU = 'https://hit78f-food3b.firebaseio.com/users.json?$byUserString';
 
     try{
       final response = await http.get(urlU);

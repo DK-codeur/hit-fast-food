@@ -93,10 +93,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
                         // SizedBox(width: 90,),
 
-                        IconButton(
-                          icon: Icon(Icons.edit, color: Colors.white, size: 30,),
-                          onPressed: () {},
-                        ),
+                        SizedBox(width: 30)
                       ],
                     )
                   )
@@ -147,32 +144,32 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
                           SizedBox(height: 10),
                          
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: <Widget>[
-                              Text(
-                                '350 F CFA',
-                                style: TextStyle(
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              )
-                            ],
-                          ),
+                          // Row(
+                          //   mainAxisAlignment: MainAxisAlignment.center,
+                          //   children: <Widget>[
+                          //     Text(
+                          //       '350 F CFA',
+                          //       style: TextStyle(
+                          //         fontSize: 20,
+                          //         fontWeight: FontWeight.bold,
+                          //       ),
+                          //     )
+                          //   ],
+                          // ),
 
-                           Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: <Widget>[
-                              Icon(Icons.payment, color: Colors.red, size: 17),
-                              Text(
-                                'Ma monnaie',
-                                style: TextStyle(
-                                  fontSize: 12,
-                                  color: Colors.grey,
-                                ),
-                              )
-                            ],
-                          ),
+                          //  Row(
+                          //   mainAxisAlignment: MainAxisAlignment.center,
+                          //   children: <Widget>[
+                          //     Icon(Icons.payment, color: Colors.red, size: 17),
+                          //     Text(
+                          //       'Ma monnaie',
+                          //       style: TextStyle(
+                          //         fontSize: 12,
+                          //         color: Colors.grey,
+                          //       ),
+                          //     )
+                          //   ],
+                          // ),
 
                         ],
                       ),
@@ -234,7 +231,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       Row(
                         children: <Widget>[
                           Text(
-                            user['phone'],
+                            "+225 ${user['phone']}",
                             style: TextStyle(
                               fontWeight: FontWeight.bold,
                               fontSize: 18,

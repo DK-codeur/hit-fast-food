@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:hit_fast_food/src/providers/auth.dart';
-import 'package:hit_fast_food/src/screens/login.dart';
 import 'package:hit_fast_food/src/screens/map.dart';
 import 'package:hit_fast_food/src/screens/profile_screen.dart';
 import 'package:hit_fast_food/src/shared/colors.dart';
@@ -110,14 +109,12 @@ class MainDrawer extends StatelessWidget {
 
               // DrawerCategorie(),
               menuList(
-                 (Provider.of<Auth>(context, listen: false).isAuth ) 
-                 ? capitalize(Provider.of<Auth>(context).userInfo['username'])
-                 :  'Compte', 
+                 
+                 capitalize(Provider.of<Auth>(context).userInfo['username']),
 
                  Icons.account_circle, 
-
-                 (Provider.of<Auth>(context, listen: false).isAuth )
-                 ? () async {
+                
+                  () async {
                    Navigator.of(context).pop();
                    await Navigator.of(context).push(
                      
@@ -128,7 +125,6 @@ class MainDrawer extends StatelessWidget {
                      )
                     );
                   }
-                 : ()=> Navigator.of(context).pushNamed(Login.routeName)
               ),
 
               
@@ -148,7 +144,57 @@ class MainDrawer extends StatelessWidget {
                      )
                   );
               
-                }),
+                }
+              ),
+
+              Divider(),
+
+              SizedBox(height: MediaQuery.of(context).size.height /15),
+
+
+            Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: <Widget> [ 
+               Container(
+                margin: EdgeInsets.only(left: 4, right: 4),
+                height: 40,
+                width: MediaQuery.of(context).size.width /2,
+                decoration: BoxDecoration(
+                  color: primaryColor,
+                  borderRadius: BorderRadius.circular(24),
+                ),
+
+                child: InkWell(
+                  onTap: () async{
+                   
+                    try{
+                      Navigator.of(context).pop();
+                      Navigator.of(context).pushReplacementNamed('/');
+                      Provider.of<Auth>(context, listen: false).logout();
+                    } catch (error) {
+                      throw error;
+                    }
+                    
+                  },
+
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      Icon(Icons.power_settings_new, color: Colors.white, size: 20,),
+                      Text(
+                          'Deconnexion',
+                          style: TextStyle(color: Colors.white, fontWeight: FontWeight.w700, fontSize: 15),
+                      ),
+                    ],
+                  ),
+                  
+                ),
+              ),
+            ]
+          ),
+
+
 
             ],
           ),

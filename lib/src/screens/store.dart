@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:hit_fast_food/src/providers/auth.dart';
 import 'package:hit_fast_food/src/providers/datas_provider.dart';
 import 'package:hit_fast_food/src/widgets/deals.dart';
@@ -17,7 +16,7 @@ class Store extends StatefulWidget {
 class _StoreState extends State<Store> {
 
   // var _isInit = true;
-  var _isLoading = false;
+  // var _isLoading = false;
 
   Future<void> _refreshProducts(BuildContext context) async {
     await Provider.of<ProductsProvider>(context).fetchAndSetProduct();

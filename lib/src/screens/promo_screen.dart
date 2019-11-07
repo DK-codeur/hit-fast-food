@@ -33,7 +33,7 @@ class PromoScreen extends StatelessWidget {
           )
         ),
               
-            ),
+      ),
     );
   }
 }
