@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:hit_fast_food/src/providers/product.dart';
-import 'package:page_transition/page_transition.dart';
 import 'package:provider/provider.dart';
 import '../screens/productPage.dart';
 import '../shared/colors.dart';
@@ -43,15 +42,34 @@ class FoodItem extends StatelessWidget {
             //   )
             // ),
 
+            // onTap: () {
+            //   Navigator.push(
+            //     context, 
+            //     PageTransition(
+            //       type: PageTransitionType.rightToLeftWithFade, 
+            //       duration: Duration(milliseconds: 900),
+            //       child: ProductPage(
+            //         routeArgAsid: product.idPdt,
+            //       )
+            //     )
+            //   );
+            // },
+
             onTap: () {
               Navigator.push(
-                context, 
-                PageTransition(
-                  type: PageTransitionType.rightToLeftWithFade, 
-                  duration: Duration(milliseconds: 900),
-                  child: ProductPage(
-                    routeArgAsid: product.idPdt,
-                  )
+                context,
+                PageRouteBuilder(
+                  transitionDuration: Duration(seconds: 1),
+                  transitionsBuilder: (context, animation, secondaryAnimation, child) {
+                   return SlideTransition(
+                      position: Tween<Offset>(
+                        begin: const Offset(-1, 0),
+                        end: Offset.zero,
+                      ).animate(animation),
+                      child: child,
+                    );
+                  },
+                  pageBuilder: (_, __, ___) => ProductPage( routeArgAsid: product.idPdt)
                 )
               );
             },
@@ -108,7 +126,7 @@ class FoodItem extends StatelessWidget {
                       padding: EdgeInsets.only(
                           top: 5, left: 10, right: 10, bottom: 5),
                       decoration: BoxDecoration(
-                          color: Colors.grey[600],
+                          color: Colors.black45,
                           borderRadius: BorderRadius.circular(50)),
                       child: Text('-' + product.discount.toString() + '%',
                           style: TextStyle(

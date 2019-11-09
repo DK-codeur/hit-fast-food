@@ -30,7 +30,7 @@ class Dashboard extends StatefulWidget {
 
 class _DashboardState extends State<Dashboard> {
 
-  // final GlobalKey<ScaffoldState> _keyScaffold = GlobalKey<ScaffoldState>();
+  final GlobalKey<ScaffoldState> _keyScaffold = GlobalKey<ScaffoldState>();
 
   int _selectedIndex = 1;
 
@@ -90,18 +90,18 @@ class _DashboardState extends State<Dashboard> {
     ];
 
     return Scaffold(
-      // key: _keyScaffold,
+      key: _keyScaffold,
         backgroundColor: bgColor,
         appBar: AppBar(
           centerTitle: true,
           elevation: 0,
-          // leading: IconButton(
-          //   onPressed: () {
-          //     _keyScaffold.currentState.openDrawer();
-          //   },
-          //   iconSize: 27,
-          //   icon: Icon(Icons.apps),
-          // ),
+          leading: IconButton(
+            onPressed: () {
+              _keyScaffold.currentState.openDrawer();
+            },
+            iconSize: 30,
+            icon: Icon(Icons.sort), //notes
+          ),
           backgroundColor: primaryColor,
           title: Text('Hit FastFood', style: logoWhiteStyle, textAlign: TextAlign.center),
           actions: <Widget>[

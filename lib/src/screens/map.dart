@@ -10,6 +10,7 @@ class Maps extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
+        
         title: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[

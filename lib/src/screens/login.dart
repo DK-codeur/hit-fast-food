@@ -246,7 +246,7 @@ class _LoginState extends State<Login> {
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: <Widget>[
                     Text(
-                      "Besoin d'aide?",
+                      "",
                       style: TextStyle(
                         fontSize: 16.0,
                         color: Colors.white,

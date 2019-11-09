@@ -119,7 +119,7 @@ class Auth with ChangeNotifier {
     try{
       final response = await http.get(urlU);
       final extractedData = json.decode(response.body) as Map<String, dynamic>;
-      print(extractedData);
+      // print(extractedData);
 
       if(extractedData == null) {
         return;

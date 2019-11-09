@@ -351,7 +351,24 @@ class _ProductPageState extends State<ProductPage> {
                           ),
                         ),
                       ),
+                    ),
+
+                    Positioned( 
+              top: 10,
+              left: 75,
+              child: (reqPdt.discount != 0)
+                  ? Container(
+                      padding: EdgeInsets.only(
+                          top: 5, left: 10, right: 10, bottom: 5),
+                      decoration: BoxDecoration(
+                          color: Colors.grey[600],
+                          borderRadius: BorderRadius.circular(50)),
+                      child: Text('-' + reqPdt.discount.toString() + '%',
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.w700)),
                     )
+                  : SizedBox(width: 0))
                   ],
                 ),
               ),

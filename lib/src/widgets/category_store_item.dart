@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:hit_fast_food/src/shared/colors.dart';
-import 'package:page_transition/page_transition.dart';
 import 'package:provider/provider.dart';
 
 import '../providers/product.dart';
@@ -38,13 +37,19 @@ class CategoryStoreItem extends StatelessWidget {
 
             onTap: () {
               Navigator.push(
-                context, 
-                PageTransition(
-                  type: PageTransitionType.rightToLeftWithFade, 
-                  duration: Duration(seconds: 1),
-                  child: ProductPage(
-                    routeArgAsid: reqCatItem.idPdt,
-                  )
+                context,
+                PageRouteBuilder(
+                  transitionDuration: Duration(seconds: 1),
+                  transitionsBuilder: (context, animation, secondaryAnimation, child) {
+                    return SlideTransition(
+                      position: Tween<Offset>(
+                        begin: const Offset(-1, 0),
+                        end: Offset.zero,
+                      ).animate(animation),
+                      child: child,
+                    );
+                  },
+                  pageBuilder: (_, __, ___) => ProductPage( routeArgAsid: reqCatItem.idPdt)
                 )
               );
             },
@@ -95,7 +100,7 @@ class CategoryStoreItem extends StatelessWidget {
                       padding: EdgeInsets.only(
                           top: 5, left: 10, right: 10, bottom: 5),
                       decoration: BoxDecoration(
-                          color: Colors.grey[600],
+                          color: Colors.black45,
                           borderRadius: BorderRadius.circular(50)),
                       child: Text('-' + '${reqCatItem.discount.toInt()}' + '%',
                           style: TextStyle(

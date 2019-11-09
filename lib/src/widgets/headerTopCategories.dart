@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:hit_fast_food/src/providers/datas_provider.dart';
-import 'package:page_transition/page_transition.dart';
 import 'package:provider/provider.dart';
 
 import '../providers/category.dart';
@@ -108,13 +107,19 @@ class HeaderCategoryItem extends StatelessWidget {
 
               onPressed: () {
               Navigator.push(
-                context, PageTransition(
-                  type: PageTransitionType.rightToLeftWithFade, 
-                  duration: Duration(seconds: 1),
-                  child: CategoryStoreScreen(
-                    id: category.id,
-                    fakeId: category.fakeId,
-                  )
+                context,
+                PageRouteBuilder(
+                  transitionDuration: Duration(seconds: 1),
+                  transitionsBuilder: (context, animation, secondaryAnimation, child) {
+                    return SlideTransition(
+                      position: Tween<Offset>(
+                        begin: const Offset(-1, 0),
+                        end: Offset.zero,
+                      ).animate(animation),
+                      child: child,
+                    );
+                  },
+                  pageBuilder: (_, __, ___) => CategoryStoreScreen(id: category.id, fakeId: category.fakeId,)
                 )
               );
             },

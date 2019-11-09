@@ -24,9 +24,21 @@ class PromoItem extends StatelessWidget {
           InkWell( //image
 
             onTap: () {
-              Navigator.of(context).pushNamed(
-                ProductPage.routeName,
-                arguments: reqProductPromoItem.idPdt
+              Navigator.push(
+                context,
+                PageRouteBuilder(
+                  transitionDuration: Duration(seconds: 1),
+                  transitionsBuilder: (context, animation, secondaryAnimation, child) {
+                   return SlideTransition(
+                      position: Tween<Offset>(
+                        begin: const Offset(-1, 0),
+                        end: Offset.zero,
+                      ).animate(animation),
+                      child: child,
+                    );
+                  },
+                  pageBuilder: (_, __, ___) => ProductPage( routeArgAsid: reqProductPromoItem.idPdt)
+                )
               );
             },
 
@@ -45,7 +57,7 @@ class PromoItem extends StatelessWidget {
                   ),
                   child: Hero(
                     transitionOnUserGestures: true,
-                    tag: reqProductPromoItem.title,
+                    tag: reqProductPromoItem.idPdt,
                     child: Container(
                       child: FadeInImage.assetNetwork(
                         alignment: Alignment.topCenter,
@@ -79,7 +91,7 @@ class PromoItem extends StatelessWidget {
                       padding: EdgeInsets.only(
                           top: 5, left: 10, right: 10, bottom: 5),
                       decoration: BoxDecoration(
-                          color: Colors.grey[600],
+                          color: Colors.black45,
                           borderRadius: BorderRadius.circular(50)),
                       child: Text('-' + '${reqProductPromoItem.discount.toInt()}' + '%',
                           style: TextStyle(
