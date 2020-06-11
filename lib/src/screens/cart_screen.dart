@@ -443,8 +443,6 @@ class _OrderButtonState extends State<OrderButton> {
 
             _showErrorDialog('$errorMsg'); 
 
-            
-            
           }
 
           // Fluttertoast.showToast(

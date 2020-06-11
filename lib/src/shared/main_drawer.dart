@@ -110,7 +110,9 @@ class MainDrawer extends StatelessWidget {
               // DrawerCategorie(),
               menuList(
                  
-                 capitalize(Provider.of<Auth>(context).userInfo['username']),
+                 (Provider.of<Auth>(context).userInfo['username'].toString().length != 0) 
+                 ? capitalize(Provider.of<Auth>(context).userInfo['username'])
+                 : 'chargement profile...',
 
                  Icons.account_circle, 
                 

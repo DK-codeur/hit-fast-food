@@ -35,8 +35,8 @@ class CategoryStoreItem extends StatelessWidget {
             //   );
             // },
 
-            onTap: () {
-              Navigator.push(
+            onTap: () async {
+              await Navigator.push(
                 context,
                 PageRouteBuilder(
                   transitionDuration: Duration(seconds: 1),

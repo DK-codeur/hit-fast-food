@@ -105,8 +105,8 @@ class HeaderCategoryItem extends StatelessWidget {
               // );
               // },
 
-              onPressed: () {
-              Navigator.push(
+              onPressed: () async {
+              await Navigator.push(
                 context,
                 PageRouteBuilder(
                   transitionDuration: Duration(seconds: 1),

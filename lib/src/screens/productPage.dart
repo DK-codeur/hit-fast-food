@@ -199,7 +199,7 @@ class _ProductPageState extends State<ProductPage> {
                                         onPressed: () {
                                           setState(() {
                                            if(_quantity == 1) return; //no decre if qte ==1
-                                             _quantity -= 1; 
+                                            _quantity -= 1; 
                                           });
                                         },
                                         child: Icon(Icons.remove),
