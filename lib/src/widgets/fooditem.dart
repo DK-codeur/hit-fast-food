@@ -96,7 +96,7 @@ class FoodItem extends StatelessWidget {
                     // )
                       child: FadeInImage.assetNetwork(
                       placeholder: 'images/load_img.png',
-                      image: product.image,
+                      image: product.image.trim(),
                       fit: BoxFit.contain,
                     ),
 

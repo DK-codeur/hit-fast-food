@@ -72,7 +72,7 @@ class CategoryStoreItem extends StatelessWidget {
                       child: FadeInImage.assetNetwork(
                         alignment: Alignment.topCenter,
                         placeholder: 'images/load_img.png',
-                        image: reqCatItem.image,
+                        image: reqCatItem.image.trim(),
                         fit: BoxFit.contain,
                       ),
                     )

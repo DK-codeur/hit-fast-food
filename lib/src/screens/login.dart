@@ -239,9 +239,14 @@ class _LoginState extends State<Login> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 
-                SizedBox(
-                  height: 55.0,
+                Container(
+                  height: 200,
+                  width: 200,
+                  child: Image.asset(
+                    'images/hitFastfood.gif',
+                  ),
                 ),
+
                 Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: <Widget>[

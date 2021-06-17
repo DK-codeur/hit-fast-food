@@ -367,6 +367,8 @@ class _SignUpState extends State<SignUp> {
               ),
             ),
 
+            
+
 
             Padding(
             padding: EdgeInsets.symmetric(horizontal: 12.0, vertical: 15),
@@ -374,9 +376,7 @@ class _SignUpState extends State<SignUp> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 
-                SizedBox(
-                  height: 30.0,
-                ),
+                SizedBox(height: MediaQuery.of(context).size.height / 8,),
 
                 Form( //Form
                   key: _form,
